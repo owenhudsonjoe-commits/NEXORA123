@@ -1,0 +1,6 @@
+{
+  "name": "NEXORA - Digital Banking Portal",
+  "description": "Private digital multi-currency banking portal for Ayesha Khan featuring USD/PKR balance conversion, international providers (Revolut, Payoneer, PayPal), Pakistani banks, and PIN-secured transfers.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
