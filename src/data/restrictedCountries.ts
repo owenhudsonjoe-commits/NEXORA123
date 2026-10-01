@@ -15,7 +15,7 @@ export interface AvailableCountry {
   region: string;
 }
 
-// Exactly 3 countries: Pakistan, India, China
+// Exactly 2 countries: Pakistan, India
 export const RESTRICTED_COUNTRIES: RestrictedCountry[] = [
   {
     code: 'PK',
@@ -33,26 +33,17 @@ export const RESTRICTED_COUNTRIES: RestrictedCountry[] = [
     reason: 'Outward payments subject to Foreign Exchange Management Act (FEMA) & cross-border AML limits.',
     isExplicitlyRequested: true,
   },
-  {
-    code: 'CN',
-    name: 'China',
-    flag: '🇨🇳',
-    currency: 'CNY',
-    reason: 'Direct retail capital account transfer controls and network routing compliance checks.',
-    isExplicitlyRequested: true,
-  },
 ];
 
-// Exactly 3 countries: Pakistan, India, China
+// Exactly 2 countries: Pakistan, India
 export const AVAILABLE_COUNTRIES: AvailableCountry[] = [
   { code: 'PK', name: 'Pakistan', flag: '🇵🇰', currency: 'PKR', region: 'South Asia' },
   { code: 'IN', name: 'India', flag: '🇮🇳', currency: 'INR', region: 'South Asia' },
-  { code: 'CN', name: 'China', flag: '🇨🇳', currency: 'CNY', region: 'East Asia' },
 ];
 
 /**
  * Checks if a country is in the restricted/unsupported list.
- * The 3 configured corridors (Pakistan, India, China)
+ * The 2 configured corridors (Pakistan, India)
  * are fully supported and enabled.
  */
 export function isCountryRestricted(query: string | undefined | null): boolean {
@@ -64,13 +55,12 @@ export function isCountryRestricted(query: string | undefined | null): boolean {
     pak: 'pakistan',
     ind: 'india',
     insia: 'india',
-    chn: 'china',
   };
 
   const lookup = aliasMap[normalized] || normalized;
 
-  // The 3 countries are fully supported corridors
-  const isOneOfThree = AVAILABLE_COUNTRIES.some(
+  // The 2 countries are fully supported corridors
+  const isOneOfTwo = AVAILABLE_COUNTRIES.some(
     (c) =>
       c.code.toLowerCase() === lookup ||
       c.name.toLowerCase() === lookup ||
@@ -78,11 +68,11 @@ export function isCountryRestricted(query: string | undefined | null): boolean {
       c.name.toLowerCase().includes(lookup)
   );
 
-  return !isOneOfThree;
+  return !isOneOfTwo;
 }
 
 /**
- * Returns the country details from the 3 configured corridors
+ * Returns the country details from the 2 configured corridors
  */
 export function getRestrictedCountry(query: string | undefined | null): RestrictedCountry | undefined {
   if (!query) return undefined;
@@ -92,7 +82,6 @@ export function getRestrictedCountry(query: string | undefined | null): Restrict
     pak: 'pakistan',
     ind: 'india',
     insia: 'india',
-    chn: 'china',
   };
 
   const lookup = aliasMap[normalized] || normalized;

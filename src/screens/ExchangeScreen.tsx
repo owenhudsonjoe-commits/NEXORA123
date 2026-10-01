@@ -623,7 +623,7 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
             <AlertCircle className="w-5 h-5 text-black shrink-0" />
             <div>
               <span className="font-bold block text-sm">Regulatory Corridor Compliance Notice</span>
-              Direct settlement to Pakistani banks via State Bank of Pakistan (SBP) & 1Link. Monitored corridors (3 total): Pakistan 🇵🇰, India 🇮🇳, and China 🇨🇳.
+              Direct settlement to Pakistani banks via State Bank of Pakistan (SBP) & 1Link. Monitored corridors (2 total): Pakistan 🇵🇰 and India 🇮🇳.
             </div>
           </div>
           {!pkSuccess ? (

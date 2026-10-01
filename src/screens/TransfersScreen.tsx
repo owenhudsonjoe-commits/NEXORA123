@@ -82,7 +82,7 @@ export const TransfersScreen: React.FC<TransfersScreenProps> = ({
         </button>
       </div>
 
-      {/* 3 Configured Corridors Notice */}
+      {/* 2 Configured Corridors Notice */}
       <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-start sm:items-center gap-3">
           <div className="w-8 h-8 rounded-xl bg-black text-white flex items-center justify-center shrink-0">
@@ -92,11 +92,11 @@ export const TransfersScreen: React.FC<TransfersScreenProps> = ({
             <div className="font-bold text-black flex items-center gap-2">
               Cross-Border Monitored Corridors
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-black text-white font-mono font-bold">
-                3 Active Corridors
+                2 Active Corridors
               </span>
             </div>
             <p className="text-zinc-600 text-[11px] mt-0.5">
-              Available corridors: <strong>Pakistan 🇵🇰, India 🇮🇳, and China 🇨🇳</strong> (3 monitored jurisdictions).
+              Available corridors: <strong>Pakistan 🇵🇰 and India 🇮🇳</strong> (2 monitored jurisdictions).
             </p>
           </div>
         </div>

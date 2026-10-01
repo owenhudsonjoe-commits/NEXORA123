@@ -148,11 +148,11 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             <div className="font-bold text-black flex items-center gap-2">
               Cross-Border Regulatory Corridors
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-black text-white font-mono font-bold">
-                3 Monitored Corridors
+                2 Monitored Corridors
               </span>
             </div>
             <p className="text-zinc-600 text-[11px] mt-0.5">
-              Configured jurisdictions: <strong>Pakistan 🇵🇰, India 🇮🇳, and China 🇨🇳</strong> (3 active corridors).
+              Configured jurisdictions: <strong>Pakistan 🇵🇰 and India 🇮🇳</strong> (2 active corridors).
             </p>
           </div>
         </div>
@@ -160,7 +160,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
           onClick={onOpenSend}
           className="shrink-0 text-black hover:underline font-bold text-[11px] flex items-center gap-1 cursor-pointer"
         >
-          View 3 Corridors <ChevronRight className="w-3.5 h-3.5" />
+          View 2 Corridors <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>
 
@@ -580,7 +580,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
             </div>
             <div>
               <span className="text-[10px] text-zinc-400 uppercase font-bold block">Corridor Policy</span>
-              <span className="text-zinc-700 font-medium">3 Active Corridors</span>
+              <span className="text-zinc-700 font-medium">2 Active Corridors</span>
             </div>
           </div>
         </div>
