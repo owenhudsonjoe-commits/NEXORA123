@@ -65,7 +65,7 @@ export const SecurityScreen: React.FC = () => {
         <div>
           <span className="font-bold block text-black">International Regulatory Compliance Notice</span>
           <span className="text-zinc-700">
-            Outward transfer services to 7 restricted territories (Pakistan, India, China, Japan, Malaysia, Indonesia, and Brazil) are currently unavailable in accordance with cross-border banking sanctions and regulatory policies. Transfers to compliant corridors remain active.
+            Outward transfer services are monitored in accordance with cross-border banking sanctions and regulatory policies. The configured active corridor is Pakistan 🇵🇰.
           </span>
         </div>
       </div>

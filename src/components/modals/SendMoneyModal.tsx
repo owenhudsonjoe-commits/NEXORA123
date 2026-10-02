@@ -231,10 +231,10 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
     e.preventDefault();
     setErrorMessage(null);
 
-    // Strict compliance block for corridors outside the 2 configured territories
+    // Strict compliance block for corridors outside the configured territory
     if (isSelectedCountryRestricted) {
       setErrorMessage(
-        `⛔ Outward Payments Unavailable: Transfers are restricted to the 2 configured corridors: Pakistan and India.`
+        `⛔ Outward Payments Unavailable: Transfers are restricted to the configured corridor: Pakistan.`
       );
       return;
     }
@@ -576,17 +576,17 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
                 </div>
               </div>
 
-              {/* 2. Destination Country & Corridor Status (2 Corridors) */}
+              {/* 2. Destination Country & Corridor Status (1 Corridor) */}
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-xs font-bold text-black uppercase tracking-wider flex items-center gap-2">
                     <span>2. Destination Corridor</span>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-black text-white font-bold">
-                      2 Corridors
+                      1 Corridor
                     </span>
                   </label>
                   <span className="text-[11px] text-zinc-500 font-medium">
-                    {AVAILABLE_COUNTRIES.length} Configured Regions
+                    {AVAILABLE_COUNTRIES.length} Configured Region
                   </span>
                 </div>
 
@@ -595,7 +595,7 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
                   <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-2.5" />
                   <input
                     type="text"
-                    placeholder="Search 2 corridors (Pakistan, India)..."
+                    placeholder="Search corridor (Pakistan)..."
                     value={countrySearch}
                     onChange={(e) => setCountrySearch(e.target.value)}
                     className="w-full pl-9 pr-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs text-black placeholder-zinc-400 focus:outline-none focus:border-black"
@@ -611,11 +611,11 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
                   )}
                 </div>
 
-                {/* Country Pills Grid (Strictly 2 Countries) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-48 overflow-y-auto p-1.5 border border-zinc-200 rounded-2xl bg-zinc-50/70">
+                {/* Country Pills Grid (Strictly 1 Country: Pakistan) */}
+                <div className="grid grid-cols-1 gap-3 max-h-48 overflow-y-auto p-1.5 border border-zinc-200 rounded-2xl bg-zinc-50/70">
                   {filteredAvailable.length === 0 ? (
-                    <div className="col-span-2 py-4 text-center text-xs text-zinc-400">
-                      No country matches your search within the 2 configured corridors.
+                    <div className="py-4 text-center text-xs text-zinc-400">
+                      No country matches your search within the configured corridor.
                     </div>
                   ) : (
                     filteredAvailable.map((c) => {
@@ -667,7 +667,7 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
                         </span>
                       </div>
                       <p className="text-[10px] text-zinc-500">
-                        Configured corridor (1 of 2: Pakistan, India)
+                        Configured corridor (Pakistan)
                       </p>
                     </div>
                   </div>
