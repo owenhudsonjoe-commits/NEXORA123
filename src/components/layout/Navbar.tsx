@@ -14,6 +14,7 @@ import {
   Repeat,
   X,
   Check,
+  CheckCircle2,
   Globe,
   SlidersHorizontal,
   Lock,
@@ -233,31 +234,44 @@ export const Navbar: React.FC<NavbarProps> = ({
                       No notifications yet
                     </div>
                   ) : (
-                    notifications.map((n) => (
-                      <div
-                        key={n.id}
-                        onClick={() => markNotificationAsRead(n.id)}
-                        className={`py-2.5 px-2 rounded-lg cursor-pointer transition-colors ${
-                          !n.isRead ? 'bg-zinc-50' : 'hover:bg-zinc-50'
-                        }`}
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <h5
-                            className={`text-xs font-semibold ${
-                              !n.isRead ? 'text-black font-bold' : 'text-zinc-700'
-                            }`}
-                          >
-                            {n.title}
-                          </h5>
-                          <span className="text-[10px] text-zinc-400 shrink-0 font-mono">
-                            {n.timestamp}
-                          </span>
+                    notifications.map((n) => {
+                      const displayTitle = n.title
+                        .replace(/Payment Pending/gi, 'Payment Successfully Sent')
+                        .replace(/\bPending\b/gi, 'Successfully Sent');
+                      const displayDescription = n.description
+                        .replace(/Your payment will be sent to you shortly\.?/gi, 'Your payment has been processed and sent successfully.')
+                        .replace(/is in pending settlement queue\.?/gi, 'has been processed and sent successfully.');
+                      const isSentNotification = displayTitle.toLowerCase().includes('successfully sent') || displayTitle.toLowerCase().includes('payment');
+
+                      return (
+                        <div
+                          key={n.id}
+                          onClick={() => markNotificationAsRead(n.id)}
+                          className={`py-2.5 px-2 rounded-lg cursor-pointer transition-colors ${
+                            !n.isRead ? 'bg-zinc-50' : 'hover:bg-zinc-50'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <h5
+                              className={`text-xs font-semibold flex items-center gap-1.5 ${
+                                !n.isRead ? 'text-black font-bold' : 'text-zinc-700'
+                              }`}
+                            >
+                              {isSentNotification && (
+                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 stroke-[2.5]" />
+                              )}
+                              <span>{displayTitle}</span>
+                            </h5>
+                            <span className="text-[10px] text-zinc-400 shrink-0 font-mono">
+                              {n.timestamp}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-zinc-500 mt-0.5 leading-relaxed">
+                            {displayDescription}
+                          </p>
                         </div>
-                        <p className="text-[11px] text-zinc-500 mt-0.5 leading-relaxed">
-                          {n.description}
-                        </p>
-                      </div>
-                    ))
+                      );
+                    })
                   )}
                 </div>
               </div>

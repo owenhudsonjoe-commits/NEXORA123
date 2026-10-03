@@ -223,7 +223,23 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const [notifications, setNotifications] = useState<AppNotification[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEYS.NOTIFICATIONS);
-    return saved ? JSON.parse(saved) : INITIAL_NOTIFICATIONS;
+    if (saved) {
+      try {
+        const parsed: AppNotification[] = JSON.parse(saved);
+        return parsed.map((n) => ({
+          ...n,
+          title: n.title
+            .replace(/Payment Pending/gi, 'Payment Successfully Sent')
+            .replace(/\bPending\b/gi, 'Successfully Sent'),
+          description: n.description
+            .replace(/Your payment will be sent to you shortly\.?/gi, 'Your payment has been processed and sent successfully.')
+            .replace(/is in pending settlement queue\.?/gi, 'has been processed and sent successfully.'),
+        }));
+      } catch (e) {
+        return INITIAL_NOTIFICATIONS;
+      }
+    }
+    return INITIAL_NOTIFICATIONS;
   });
 
   const [securityState, setSecurityState] = useState<SecurityState>(() => {
@@ -528,7 +544,7 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setTransactions((prev) => [newTx, ...prev]);
 
     addNotification({
-      title: `Payment Sent: -${formatMoney(amount, sourceCurrency)}`,
+      title: `Payment Successfully Sent: -${formatMoney(amount, sourceCurrency)}`,
       description: `Your payment of ${formatMoney(amount, sourceCurrency)} to ${recipientName} has been processed and sent successfully.`,
       type: 'payment',
     });
