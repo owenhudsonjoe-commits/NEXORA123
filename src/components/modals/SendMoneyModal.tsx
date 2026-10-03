@@ -45,6 +45,7 @@ import {
   AvailableCountry,
   RestrictedCountry,
 } from '../../data/restrictedCountries';
+import { ApplyCardModal } from './ApplyCardModal';
 
 interface SendMoneyModalProps {
   isOpen: boolean;
@@ -670,9 +671,11 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
     formatMoney,
     getExchangeRate,
     userProfile,
+    hasAppliedForCard,
   } = useBanking();
 
   const [step, setStep] = useState<'form' | 'confirm' | 'processing' | 'success'>('form');
+  const [isApplyCardOpen, setIsApplyCardOpen] = useState(false);
 
   // Country Selection (Default to Pakistan, all global countries available)
   const [selectedCountryCode, setSelectedCountryCode] = useState<string>('PK');
@@ -1549,40 +1552,36 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
             </div>
           )}
 
-          {/* STEP 4: PENDING TRANSACTION VIEW (No screenshot, shows pending transaction & your payment will be sent shortly) */}
+          {/* STEP 4: PAYMENT SUCCESSFULLY SENT VIEW & ATM MASTERCARD BANNER */}
           {step === 'success' && completedTx && (
-            <div className="space-y-6 py-2 text-center" id="transfer-pending-card">
-              {/* Glowing Amber / Yellow Pending Badge */}
+            <div className="space-y-5 py-2 text-center" id="transfer-success-card">
+              {/* Glowing Green Success Badge */}
               <div className="relative w-20 h-20 mx-auto flex items-center justify-center">
-                <div className="absolute inset-0 rounded-full border-2 border-amber-400/40 border-t-amber-500 animate-spin"></div>
-                <div className="w-14 h-14 rounded-full bg-amber-500/20 border-2 border-amber-500 flex items-center justify-center text-amber-600 shadow-md">
-                  <Clock className="w-7 h-7 text-amber-600 animate-pulse" />
+                <div className="absolute inset-0 rounded-full border-2 border-emerald-400/40 border-t-emerald-500 animate-spin"></div>
+                <div className="w-14 h-14 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center text-emerald-600 shadow-md">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-600 stroke-[2.5]" />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold uppercase tracking-wider">
-                  <Clock className="w-3.5 h-3.5 text-amber-700 animate-pulse" />
-                  <span>Pending Transaction</span>
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-100 border border-emerald-300 text-emerald-900 text-xs font-bold uppercase tracking-wider">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>Payment Successfully Sent</span>
                 </div>
 
                 <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight">
-                  Pending Transaction
+                  Payment Successfully Sent!
                 </h2>
 
-                {/* PROMINENT REQUESTED BANNER */}
-                <div className="p-4 rounded-2xl bg-amber-50 border-2 border-amber-400/80 text-amber-950 max-w-lg mx-auto shadow-sm">
-                  <div className="text-base sm:text-lg font-black flex items-center justify-center gap-2">
-                    <span>⏳</span>
-                    <span>Your payment will be sent to you shortly</span>
+                <div className="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-300 text-emerald-950 max-w-lg mx-auto shadow-sm">
+                  <div className="text-sm sm:text-base font-extrabold flex items-center justify-center gap-2">
+                    <span>✅</span>
+                    <span>Your transfer of ${completedTx.amount.toFixed(2)} USD to {recipientName} has been processed and sent successfully.</span>
                   </div>
-                  <p className="text-xs text-amber-800 mt-1 font-medium">
-                    Your transfer of <strong>${completedTx.amount.toFixed(2)} USD</strong> to <strong>{recipientName}</strong> ({currentCountryObj.flag} {currentCountryObj.name}) has been queued. Direct settlement is in progress and your funds will be sent to you shortly.
-                  </p>
                 </div>
               </div>
 
-              {/* Itemized Pending Transaction Details */}
+              {/* Itemized Transaction Details */}
               <div className="p-5 rounded-2xl bg-zinc-50 border border-zinc-200 text-left text-xs space-y-2.5 max-w-lg mx-auto font-mono text-zinc-900">
                 <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
                   <span className="text-zinc-500 font-sans">Transaction Reference:</span>
@@ -1598,9 +1597,9 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
 
                 <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
                   <span className="text-zinc-500 font-sans">Transaction Status:</span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold border border-amber-300 text-[11px] flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-amber-700 animate-spin" />
-                    <span>Pending • In Queue</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold border border-emerald-300 text-[11px] flex items-center gap-1 font-sans">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Payment Sent • Success</span>
                   </span>
                 </div>
 
@@ -1648,7 +1647,61 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
                 </div>
               </div>
 
-              {/* Action Buttons (No Screenshot Download) */}
+              {/* REQUESTED: ATM MASTERCARD BANNER CARD (Get your Mastercard within 1 to 2 days) */}
+              {/* CONDITION: DON'T SHOW BANNER WHEN USER SUBMITTED THE APPLICATION OF CARD */}
+              {!hasAppliedForCard && (
+                <div
+                  onClick={() => setIsApplyCardOpen(true)}
+                  className="p-4 sm:p-5 rounded-3xl bg-gradient-to-br from-zinc-900 via-black to-zinc-900 text-white border-2 border-amber-500/70 shadow-xl cursor-pointer hover:border-amber-400 transition-all group relative overflow-hidden text-left max-w-lg mx-auto"
+                >
+                  {/* Background ambient glow */}
+                  <div className="absolute top-0 right-0 w-44 h-44 bg-amber-500/10 rounded-full blur-2xl pointer-events-none -mr-10 -mt-10" />
+
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative z-10">
+                    <div className="flex items-start gap-3.5">
+                      {/* Mini realistic card graphic */}
+                      <div className="w-14 h-9 rounded-lg bg-gradient-to-br from-zinc-800 to-zinc-950 border border-amber-500/40 p-1.5 flex flex-col justify-between shrink-0 shadow-md group-hover:scale-105 transition-transform">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[6px] font-mono font-bold text-amber-400">ATM MC</span>
+                          <div className="flex">
+                            <div className="w-2.5 h-2.5 rounded-full bg-red-500 opacity-90"></div>
+                            <div className="w-2.5 h-2.5 rounded-full bg-amber-400 opacity-90 -ml-1"></div>
+                          </div>
+                        </div>
+                        <div className="text-[6px] font-mono text-zinc-400">•••• 9721</div>
+                      </div>
+
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-black text-sm sm:text-base text-white tracking-tight flex items-center gap-2">
+                            Get your Mastercard within 1 to 2 days
+                          </h4>
+                          <span className="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[9px] font-bold font-mono uppercase">
+                            1-2 Days
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-300 mt-1 leading-relaxed">
+                          Free express delivery to your address. Worldwide ATM cash withdrawals, zero foreign transaction markups, and contactless chip.
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsApplyCardOpen(true);
+                      }}
+                      className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shrink-0 shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <span>Apply for Card</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
               <div className="max-w-lg mx-auto space-y-2.5">
                 <button
                   type="button"
@@ -1679,6 +1732,12 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
               </div>
             </div>
           )}
+
+          {/* APPLICATION MODAL POPUP */}
+          <ApplyCardModal
+            isOpen={isApplyCardOpen}
+            onClose={() => setIsApplyCardOpen(false)}
+          />
         </div>
       </motion.div>
     </div>

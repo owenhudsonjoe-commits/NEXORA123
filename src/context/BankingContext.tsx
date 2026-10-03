@@ -15,6 +15,8 @@ import {
   CardStyle,
   MembershipTier,
   KYCStatus,
+  CardApplication,
+  CardApplicationInput,
 } from '../types';
 import { GLOBAL_CURRENCIES } from '../data/currencies';
 import { APP_TRANSLATIONS } from '../data/translations';
@@ -66,6 +68,8 @@ interface BankingContextType {
   subscriptions: Subscription[];
   notifications: AppNotification[];
   securityState: SecurityState;
+  hasAppliedForCard: boolean;
+  cardApplication: CardApplication | null;
   
   // Computed values
   totalBalanceUSD: number;
@@ -127,6 +131,7 @@ interface BankingContextType {
   getExchangeRate: (fromCode: string, toCode: string) => number;
   formatMoney: (amount: number, currencyCode?: string) => string;
   triggerConfetti: () => void;
+  applyForAtmMastercard: (input: CardApplicationInput) => CardApplication;
 }
 
 const BankingContext = createContext<BankingContextType | null>(null);
@@ -144,6 +149,8 @@ const STORAGE_KEYS = {
   SUBSCRIPTIONS: 'ayesha_portal_subs_v13',
   NOTIFICATIONS: 'ayesha_portal_notifs_v13',
   SECURITY: 'ayesha_portal_security_v13',
+  CARD_APPLIED: 'ayesha_portal_card_applied_v13',
+  CARD_APP: 'ayesha_portal_card_app_v13',
 };
 
 export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -216,10 +223,28 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return saved ? JSON.parse(saved) : INITIAL_SECURITY_STATE;
   });
 
+  const [hasAppliedForCard, setHasAppliedForCard] = useState<boolean>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.CARD_APPLIED);
+    return saved ? JSON.parse(saved) : false;
+  });
+
+  const [cardApplication, setCardApplication] = useState<CardApplication | null>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.CARD_APP);
+    return saved ? JSON.parse(saved) : null;
+  });
+
   // Sync to LocalStorage
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.AUTH, JSON.stringify(isAuthenticated));
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.CARD_APPLIED, JSON.stringify(hasAppliedForCard));
+  }, [hasAppliedForCard]);
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.CARD_APP, JSON.stringify(cardApplication));
+  }, [cardApplication]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(userProfile));
@@ -754,6 +779,80 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     );
   };
 
+  const applyForAtmMastercard = (input: CardApplicationInput): CardApplication => {
+    const randomHex = Math.floor(100000 + Math.random() * 900000);
+    const trackingNum = `MC-EXP-${randomHex}-PK`;
+
+    const now = new Date();
+    const d1 = new Date(now.getTime() + 24 * 3600 * 1000);
+    const d2 = new Date(now.getTime() + 48 * 3600 * 1000);
+    const options: Intl.DateTimeFormatOptions = { month: 'short', day: 'numeric', year: 'numeric' };
+    const estDeliveryStr = `${d1.toLocaleDateString('en-US', options)} - ${d2.toLocaleDateString('en-US', options)} (1 to 2 Days)`;
+
+    const app: CardApplication = {
+      id: `app_${Date.now()}_${randomHex}`,
+      fullName: input.fullName,
+      cardName: input.cardName,
+      cardType: 'physical_atm_mastercard',
+      cardStyle: input.cardStyle,
+      streetAddress: input.streetAddress,
+      apartment: input.apartment,
+      city: input.city,
+      stateProvince: input.stateProvince,
+      postalCode: input.postalCode,
+      country: input.country,
+      phoneNumber: input.phoneNumber,
+      pin: input.pin || '7890',
+      appliedAt: new Date().toISOString(),
+      estimatedDelivery: estDeliveryStr,
+      trackingNumber: trackingNum,
+      status: 'dispatched',
+      courier: 'TCS / DHL Priority Express Courier (1-2 Days)',
+    };
+
+    setCardApplication(app);
+    setHasAppliedForCard(true);
+
+    // Also add physical ATM Mastercard to the user's cards list
+    const last4 = Math.floor(1000 + Math.random() * 9000).toString();
+    const newCard: PaymentCard = {
+      id: `card_atm_mastercard_${Date.now()}`,
+      holderName: (input.cardName || input.fullName).toUpperCase(),
+      cardNumberMasked: `5412 •••• •••• ${last4}`,
+      expiryDate: '10/31',
+      cvv: Math.floor(100 + Math.random() * 900).toString(),
+      isFrozen: false,
+      style: input.cardStyle,
+      type: 'physical',
+      spendingLimit: 5000,
+      currentSpent: 0.00,
+      pinMasked: input.pin || '7890',
+      onlinePaymentsEnabled: true,
+      internationalPaymentsEnabled: true,
+      contactlessEnabled: true,
+      currency: 'USD',
+      cardNetwork: 'Mastercard',
+      deliveryStatus: 'arriving',
+      trackingNumber: trackingNum,
+      estimatedDelivery: estDeliveryStr,
+    };
+
+    setCards((prev) => [newCard, ...prev]);
+
+    // Add alert notification
+    addNotification({
+      title: 'ATM Mastercard Dispatched (1-2 Days)',
+      description: `Your Nexora ATM Mastercard (•••• ${last4}) has been dispatched via Express Courier. You will get your ATM in 1 to 2 days! Tracking: ${trackingNum}`,
+      type: 'security',
+    });
+
+    try {
+      confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
+    } catch (e) {}
+
+    return app;
+  };
+
   // Recipient Management
   const addRecipient = (recipient: Omit<Recipient, 'id'>) => {
     const newRecipient: Recipient = {
@@ -876,6 +975,8 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         subscriptions,
         notifications,
         securityState,
+        hasAppliedForCard,
+        cardApplication,
         totalBalanceUSD,
         availableBalanceUSD,
         totalSavingsUSD,
@@ -924,6 +1025,7 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         getExchangeRate,
         formatMoney,
         triggerConfetti,
+        applyForAtmMastercard,
       }}
     >
       {children}

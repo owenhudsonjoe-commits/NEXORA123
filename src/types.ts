@@ -103,6 +103,44 @@ export interface PaymentCard {
   contactlessEnabled: boolean;
   currency: string;
   cardNetwork: 'VISA' | 'Mastercard';
+  deliveryStatus?: 'arriving' | 'active';
+  trackingNumber?: string;
+  estimatedDelivery?: string;
+}
+
+export interface CardApplication {
+  id: string;
+  fullName: string;
+  cardName: string;
+  cardType: 'physical_atm_mastercard';
+  cardStyle: CardStyle;
+  streetAddress: string;
+  apartment?: string;
+  city: string;
+  stateProvince: string;
+  postalCode: string;
+  country: string;
+  phoneNumber: string;
+  pin: string;
+  appliedAt: string;
+  estimatedDelivery: string;
+  trackingNumber: string;
+  status: 'processing' | 'dispatched' | 'out_for_delivery';
+  courier: string;
+}
+
+export interface CardApplicationInput {
+  fullName: string;
+  cardName: string;
+  cardStyle: CardStyle;
+  streetAddress: string;
+  apartment?: string;
+  city: string;
+  stateProvince: string;
+  postalCode: string;
+  country: string;
+  phoneNumber: string;
+  pin: string;
 }
 
 export interface SavingsVault {

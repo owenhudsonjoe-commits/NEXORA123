@@ -42,6 +42,7 @@ import { GLOBAL_CURRENCIES, POPULAR_EXCHANGE_PAIRS } from '../data/currencies';
 import { ALL_PAKISTANI_BANKS, PakistaniBank } from '../data/pakistaniBanks';
 import { ALL_INTERNATIONAL_PROVIDERS, InternationalPaymentProvider } from '../data/internationalBanks';
 import { FX_HISTORICAL_DATA } from '../data/mockData';
+import { ApplyCardModal } from '../components/modals/ApplyCardModal';
 
 interface ExchangeScreenProps {
   onOpenExchangeModalWithPair?: (from: string, to: string) => void;
@@ -58,10 +59,12 @@ export const ExchangeScreen: React.FC<ExchangeScreenProps> = ({
     sendMoney,
     formatMoney,
     userProfile,
+    hasAppliedForCard,
   } = useBanking();
 
   // Mode: International Banks/Fintech vs Global Currency Swap vs Restricted Corridor
   const [activeTab, setActiveTab] = useState<'international_banks' | 'currency_swap' | 'pakistan_banks'>('international_banks');
+  const [isApplyCardOpen, setIsApplyCardOpen] = useState(false);
 
   // Pakistani Banks Exchange & Transfer State
   const [selectedBankId, setSelectedBankId] = useState<string>('meezan');
@@ -1055,29 +1058,32 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
               </div>
             </div>
           ) : (
-            /* TRANSFER PENDING VIEW */
-            <div className="max-w-2xl mx-auto p-6 sm:p-8 rounded-3xl bg-[#0D0D0D] border-2 border-amber-500/40 shadow-2xl space-y-6 text-center">
-              {/* Glowing Pending Badge */}
-              <div className="w-20 h-20 rounded-full bg-amber-500/20 border-2 border-amber-500 flex items-center justify-center text-amber-400 mx-auto shadow-xl shadow-amber-500/30">
-                <Clock className="w-11 h-11 text-amber-400 animate-pulse" />
+            /* TRANSFER SUCCESS VIEW & ATMASTERCARD BANNER */
+            <div className="max-w-2xl mx-auto p-6 sm:p-8 rounded-3xl bg-[#0D0D0D] border-2 border-emerald-500/40 shadow-2xl space-y-6 text-center">
+              {/* Glowing Green Success Badge */}
+              <div className="relative w-20 h-20 mx-auto flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full border-2 border-emerald-400/40 border-t-emerald-500 animate-spin"></div>
+                <div className="w-14 h-14 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center text-emerald-400 shadow-xl shadow-emerald-500/30">
+                  <CheckCircle2 className="w-8 h-8 stroke-[2.5]" />
+                </div>
               </div>
 
               <div className="space-y-2">
-                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider">
-                  <Clock className="w-3.5 h-3.5" /> Pending Transaction
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold uppercase tracking-wider">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Payment Successfully Sent
                 </div>
 
                 <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                  Pending Transaction
+                  Payment Successfully Sent!
                 </h2>
 
                 {/* PROMINENT REQUESTED BANNER */}
-                <div className="p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-300 text-sm sm:text-base font-extrabold max-w-lg mx-auto shadow-inner">
-                  ⏳ Pending transaction: Your payment will be sent to you shortly
+                <div className="p-3.5 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-sm sm:text-base font-extrabold max-w-lg mx-auto shadow-inner">
+                  ✅ Your payment has been processed and sent successfully to {completedTransfer?.bankName}.
                 </div>
 
                 <p className="text-xs text-zinc-400 max-w-md mx-auto">
-                  The amount has been deducted from your total balance and queued. The payment will be sent shortly via the State Bank of Pakistan interbank clearing network.
+                  The amount has been deducted from your total balance and sent via the interbank clearing network.
                 </p>
               </div>
 
@@ -1124,6 +1130,48 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
                   </span>
                 </div>
               </div>
+
+              {/* REQUESTED: ATM MASTERCARD BANNER CARD (Get your Mastercard within 1 to 2 days) */}
+              {!hasAppliedForCard && (
+                <div
+                  onClick={() => setIsApplyCardOpen(true)}
+                  className="p-5 rounded-3xl bg-gradient-to-r from-zinc-950 via-black to-zinc-900 text-white border-2 border-amber-500/70 shadow-xl cursor-pointer hover:border-amber-400 transition-all text-left relative overflow-hidden group"
+                >
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-12 h-8 rounded-lg bg-zinc-800 border border-zinc-700 p-1 flex flex-col justify-between shrink-0 group-hover:scale-105 transition-transform">
+                        <span className="text-[6px] font-mono text-zinc-300">ATM</span>
+                        <div className="flex">
+                          <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                          <div className="w-2 h-2 rounded-full bg-amber-400 -ml-1"></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-black text-sm text-white">Get your Mastercard within 1 to 2 days</h4>
+                          <span className="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[9px] font-bold font-mono">
+                            1-2 Days
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-300 mt-0.5">
+                          Free priority delivery to your doorstep. Worldwide ATM cash withdrawals, zero markup, contactless chip.
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsApplyCardOpen(true);
+                      }}
+                      className="w-full sm:w-auto px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shrink-0 shadow-md cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                      <span>Apply for Card</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3">
@@ -1590,25 +1638,32 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
               </div>
             </div>
           ) : (
-            /* INTERNATIONAL SUCCESS VIEW */
-            <div className="max-w-2xl mx-auto p-6 rounded-3xl bg-[#0D0D0D] border border-zinc-800 shadow-2xl space-y-6 animate-in fade-in duration-300">
-              {/* PENDING BANNER */}
-              <div className="p-4 rounded-2xl bg-amber-500/15 border border-amber-500/40 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
-                  <Clock className="w-6 h-6 animate-pulse" />
+            /* INTERNATIONAL SUCCESS VIEW & ATMASTERCARD BANNER */
+            <div className="max-w-2xl mx-auto p-6 rounded-3xl bg-[#0D0D0D] border-2 border-emerald-500/40 shadow-2xl space-y-6 animate-in fade-in duration-300 text-center">
+              {/* Glowing Green Success Badge */}
+              <div className="relative w-20 h-20 mx-auto flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full border-2 border-emerald-400/40 border-t-emerald-500 animate-spin"></div>
+                <div className="w-14 h-14 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center text-emerald-400 shadow-xl shadow-emerald-500/30">
+                  <CheckCircle2 className="w-8 h-8 stroke-[2.5]" />
                 </div>
-                <div>
-                  <h3 className="text-base font-black text-amber-300 uppercase tracking-wide">
-                    Pending transaction: Your payment will be sent to you shortly
-                  </h3>
-                  <p className="text-xs text-amber-400/90">
-                    Payment successfully authorized and queued with {completedIntlTransfer?.providerName}. Direct settlement in progress.
-                  </p>
+              </div>
+
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold uppercase tracking-wider">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Payment Successfully Sent
+                </div>
+
+                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  Payment Successfully Sent!
+                </h2>
+
+                <div className="p-3.5 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-sm sm:text-base font-extrabold max-w-lg mx-auto shadow-inner">
+                  ✅ Your transfer to {completedIntlTransfer?.recipientName} via {completedIntlTransfer?.providerName} has been processed and sent successfully.
                 </div>
               </div>
 
               {/* Receipt Breakdown */}
-              <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 text-xs space-y-3">
+              <div className="p-5 rounded-2xl bg-zinc-950 border border-zinc-800 text-xs space-y-3 text-left">
                 <div className="flex justify-between items-center pb-2 border-b border-zinc-800">
                   <span className="text-zinc-400 font-sans">Transaction Reference:</span>
                   <span className="font-mono font-bold text-blue-400">{completedIntlTransfer?.referenceId}</span>
@@ -1655,6 +1710,48 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
                   </span>
                 </div>
               </div>
+
+              {/* REQUESTED: ATM MASTERCARD BANNER CARD (Get your Mastercard within 1 to 2 days) */}
+              {!hasAppliedForCard && (
+                <div
+                  onClick={() => setIsApplyCardOpen(true)}
+                  className="p-5 rounded-3xl bg-gradient-to-r from-zinc-950 via-black to-zinc-900 text-white border-2 border-amber-500/70 shadow-xl cursor-pointer hover:border-amber-400 transition-all text-left relative overflow-hidden group"
+                >
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="w-12 h-8 rounded-lg bg-zinc-800 border border-zinc-700 p-1 flex flex-col justify-between shrink-0 group-hover:scale-105 transition-transform">
+                        <span className="text-[6px] font-mono text-zinc-300">ATM</span>
+                        <div className="flex">
+                          <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                          <div className="w-2 h-2 rounded-full bg-amber-400 -ml-1"></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-black text-sm text-white">Get your Mastercard within 1 to 2 days</h4>
+                          <span className="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[9px] font-bold font-mono">
+                            1-2 Days
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-300 mt-0.5">
+                          Free priority delivery to your doorstep. Worldwide ATM cash withdrawals, zero markup, contactless chip.
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsApplyCardOpen(true);
+                      }}
+                      className="w-full sm:w-auto px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shrink-0 shadow-md cursor-pointer flex items-center justify-center gap-1.5"
+                    >
+                      <span>Apply for Card</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3">
@@ -2082,6 +2179,12 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
           </div>
         </div>
       )}
+
+      {/* APPLICATION MODAL POPUP */}
+      <ApplyCardModal
+        isOpen={isApplyCardOpen}
+        onClose={() => setIsApplyCardOpen(false)}
+      />
     </div>
   );
 };

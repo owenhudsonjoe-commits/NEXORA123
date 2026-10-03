@@ -19,10 +19,12 @@ import {
   PieChart as PieChartIcon,
   CheckCircle2,
   AlertTriangle,
+  Truck,
 } from 'lucide-react';
 import { useBanking } from '../context/BankingContext';
 import { CardStyle, PaymentCard, Transaction } from '../types';
 import { SPENDING_BY_CATEGORY_DATA } from '../data/mockData';
+import { ApplyCardModal } from '../components/modals/ApplyCardModal';
 
 interface CardsScreenProps {
   onSelectTransaction: (tx: Transaction) => void;
@@ -37,11 +39,14 @@ export const CardsScreen: React.FC<CardsScreenProps> = ({ onSelectTransaction })
     setCardStyle,
     formatMoney,
     transactions,
+    hasAppliedForCard,
+    cardApplication,
   } = useBanking();
 
   const [selectedCardId, setSelectedCardId] = useState<string>(cards[0]?.id || '');
   const [showCvv, setShowCvv] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);
+  const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
   const [newPin, setNewPin] = useState('7890');
   const [isPinChanged, setIsPinChanged] = useState(false);
 
@@ -113,8 +118,8 @@ export const CardsScreen: React.FC<CardsScreenProps> = ({ onSelectTransaction })
           </p>
         </div>
 
-        {/* Card Selector Pills */}
-        <div className="flex gap-2">
+        {/* Card Selector Pills & Apply Button */}
+        <div className="flex flex-wrap items-center gap-2">
           {cards.map((c) => (
             <button
               key={c.id}
@@ -126,10 +131,86 @@ export const CardsScreen: React.FC<CardsScreenProps> = ({ onSelectTransaction })
               }`}
             >
               {c.type === 'virtual' ? '⚡ Virtual' : '💳 Physical'} ({c.cardNumberMasked.slice(-4)})
+              {c.deliveryStatus === 'arriving' && (
+                <span className="ml-1.5 px-1.5 py-0.2 rounded-full bg-amber-400 text-black text-[9px] font-bold">
+                  1-2 Days
+                </span>
+              )}
             </button>
           ))}
+
+          {!hasAppliedForCard && (
+            <button
+              onClick={() => setIsApplyModalOpen(true)}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shadow-xs transition-all cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Apply for ATM Mastercard</span>
+            </button>
+          )}
         </div>
       </div>
+
+      {/* ATM Mastercard Banner: shown if NOT yet applied */}
+      {!hasAppliedForCard && (
+        <div
+          onClick={() => setIsApplyModalOpen(true)}
+          className="p-5 rounded-3xl bg-gradient-to-r from-zinc-950 via-black to-zinc-900 text-white border-2 border-amber-500/60 shadow-lg cursor-pointer hover:border-amber-400 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+        >
+          <div className="flex items-start sm:items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+              <CreditCard className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-extrabold text-base text-white">Get your ATM Mastercard within 1 to 2 days</h3>
+                <span className="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[10px] font-bold font-mono uppercase">
+                  1-2 Day Delivery
+                </span>
+              </div>
+              <p className="text-xs text-zinc-300 mt-1">
+                Zero issuance fee. Free express delivery to your address. Worldwide ATM cash withdrawals, contactless payments, and instant PIN configuration.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsApplyModalOpen(true);
+            }}
+            className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shrink-0 shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <span>Apply for ATM Mastercard</span>
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
+      )}
+
+      {/* ATM Mastercard Active Delivery Tracking Banner: shown if ALREADY applied */}
+      {hasAppliedForCard && cardApplication && (
+        <div className="p-4 sm:p-5 rounded-3xl bg-emerald-50 border border-emerald-300 text-emerald-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-start sm:items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-800 shrink-0">
+              <Truck className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="font-extrabold text-emerald-900 text-sm flex items-center gap-2">
+                <span>ATM Mastercard Dispatched • Arriving in 1 to 2 Days!</span>
+                <span className="text-[10px] bg-emerald-200/80 px-2 py-0.2 rounded-full font-bold font-mono">
+                  {cardApplication.trackingNumber}
+                </span>
+              </div>
+              <p className="text-xs text-emerald-800 mt-0.5">
+                Estimated Delivery: <strong>{cardApplication.estimatedDelivery}</strong> via {cardApplication.courier} to {cardApplication.city}, {cardApplication.country}.
+              </p>
+            </div>
+          </div>
+          <div className="text-[11px] font-bold text-emerald-900 bg-white px-3 py-1.5 rounded-xl border border-emerald-200 shrink-0 self-start sm:self-auto">
+            Status: In Transit (1-2 Days)
+          </div>
+        </div>
+      )}
 
       {/* Main 2-Column: Card Visual & Interactive Controls */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -515,6 +596,12 @@ export const CardsScreen: React.FC<CardsScreenProps> = ({ onSelectTransaction })
           </div>
         </div>
       )}
+
+      {/* ATM Mastercard Application Modal */}
+      <ApplyCardModal
+        isOpen={isApplyModalOpen}
+        onClose={() => setIsApplyModalOpen(false)}
+      />
     </div>
   );
 };
