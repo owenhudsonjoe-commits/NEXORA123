@@ -185,7 +185,15 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const [transactions, setTransactions] = useState<Transaction[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEYS.TRANSACTIONS);
-    return saved ? JSON.parse(saved) : INITIAL_TRANSACTIONS;
+    if (saved) {
+      try {
+        const parsed: Transaction[] = JSON.parse(saved);
+        return parsed.map((t) => (t.status === 'pending' ? { ...t, status: 'completed' } : t));
+      } catch (e) {
+        return INITIAL_TRANSACTIONS;
+      }
+    }
+    return INITIAL_TRANSACTIONS;
   });
 
   const [recipients, setRecipients] = useState<Recipient[]>(() => {
@@ -497,7 +505,7 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
       })
     );
 
-    // Create pending Transaction
+    // Create completed Transaction (successful)
     const randomHex = Math.random().toString(36).substring(2, 7).toUpperCase();
     const timestamp = new Date().toISOString();
     const newTx: Transaction = {
@@ -509,7 +517,7 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
       amount: amount,
       currency: sourceCurrency,
       type: 'expense',
-      status: 'pending',
+      status: 'completed',
       timestamp: timestamp,
       fee: fee,
       note: note || `Outward transfer to ${recipientName} via ${provider || recipientCountry}`,
@@ -520,8 +528,8 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setTransactions((prev) => [newTx, ...prev]);
 
     addNotification({
-      title: `Payment Pending: -${formatMoney(amount, sourceCurrency)}`,
-      description: `Your payment will be sent to you shortly. Outward transfer to ${recipientName} (${recipientCountry}) is in pending settlement queue.`,
+      title: `Payment Sent: -${formatMoney(amount, sourceCurrency)}`,
+      description: `Your payment of ${formatMoney(amount, sourceCurrency)} to ${recipientName} has been processed and sent successfully.`,
       type: 'payment',
     });
 

@@ -715,7 +715,7 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
   const currentCountryObj = activeAvailableCountry || AVAILABLE_COUNTRIES[0];
   const activeProvider = INTERNATIONAL_PAYMENT_PROVIDERS.find((p) => p.id === selectedProviderId) || INTERNATIONAL_PAYMENT_PROVIDERS[0];
 
-  // 5-Second Processing Effect before displaying payment pending screen
+  // 5-Second Processing Effect before displaying payment success screen
   useEffect(() => {
     if (step !== 'processing') return;
 
@@ -824,7 +824,7 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
       '        NEXORA INTERNATIONAL TRANSACTION RECORD ',
       '------------------------------------------------',
       `Reference ID:    ${completedTx.referenceId}`,
-      `Status:          PENDING (Your payment will be sent shortly)`,
+      `Status:          SUCCESSFUL (Payment Successfully Sent)`,
       `Date & Time:     ${new Date(completedTx.timestamp).toLocaleString()}`,
       `Sender:          ${userProfile.fullName} (${userProfile.email})`,
       `Beneficiary:     ${recipientName}`,
@@ -835,7 +835,7 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
       `Transfer Fee:    $0.00 USD (Zero Fee)`,
       `Remaining Bal:   ${formatMoney(usdWallet.balance, 'USD')}`,
       '------------------------------------------------',
-      'Your payment will be sent to you shortly.',
+      'Payment successfully completed and sent.',
     ].filter(Boolean).join('\n');
 
     navigator.clipboard.writeText(text);
@@ -1724,7 +1724,7 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
                 <button
                   type="button"
                   onClick={handleCloseAndReset}
-                  id="done-pending-btn"
+                  id="done-success-btn"
                   className="w-full py-3.5 rounded-xl bg-black hover:bg-zinc-800 text-white font-bold text-xs shadow-md transition-colors cursor-pointer text-center"
                 >
                   Done & Return to Dashboard

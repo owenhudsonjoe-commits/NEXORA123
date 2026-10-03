@@ -15,6 +15,7 @@ import {
   Copy,
   CreditCard,
   Building2,
+  CheckCircle2,
 } from 'lucide-react';
 import { Transaction } from '../../types';
 import { useBanking } from '../../context/BankingContext';
@@ -46,7 +47,7 @@ NEXORA OFFICIAL TRANSACTION RECEIPT
 Ref: ${transaction.referenceId}
 Merchant/Counterparty: ${transaction.recipientMerchant}
 Amount: ${formatMoney(transaction.amount, transaction.currency)}
-Status: ${transaction.status.toUpperCase()}
+Status: ${transaction.status === 'failed' || transaction.status === 'cancelled' ? transaction.status.toUpperCase() : 'SUCCESSFUL'}
 Date: ${new Date(transaction.timestamp).toLocaleString()}
 Category: ${transaction.category}
 Authorized & Verified By NEXORA Digital Banking
@@ -98,9 +99,17 @@ Authorized & Verified By NEXORA Digital Banking
             <div className="text-sm font-semibold text-black mt-1">
               {transaction.recipientMerchant}
             </div>
-            <div className="inline-block mt-2 px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider bg-zinc-100 border border-zinc-200 text-black">
-              {transaction.status}
-            </div>
+            {transaction.status === 'failed' || transaction.status === 'cancelled' ? (
+              <div className="inline-flex items-center gap-1.5 mt-2 px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-rose-50 border border-rose-200 text-rose-700">
+                <X className="w-3.5 h-3.5 text-rose-600" />
+                <span>{transaction.status}</span>
+              </div>
+            ) : (
+              <div className="inline-flex items-center gap-1.5 mt-2 px-3 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-50 border border-emerald-300 text-emerald-800 shadow-2xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" />
+                <span>SUCCESSFUL</span>
+              </div>
+            )}
           </div>
 
           {/* Details list */}
