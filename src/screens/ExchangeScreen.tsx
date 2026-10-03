@@ -609,21 +609,21 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
           }`}
         >
           <span className="text-base">🇵🇰</span>
-          <span>Pakistani Corridor</span>
+          <span>Pakistani Banks & Wallets</span>
           <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-mono font-bold">
-            Active SBP / 1Link
+            Easypaisa • JazzCash • 1Link
           </span>
         </button>
       </div>
 
-      {/* TAB 1: PAKISTANI BANKS */}
+      {/* TAB 1: PAKISTANI BANKS & WALLETS */}
       {activeTab === 'pakistan_banks' && (
         <div className="space-y-6">
           <div className="p-4 rounded-2xl bg-zinc-100 border border-zinc-300 text-zinc-900 text-xs flex items-center gap-3">
             <AlertCircle className="w-5 h-5 text-black shrink-0" />
             <div>
-              <span className="font-bold block text-sm">Regulatory Corridor Compliance Notice</span>
-              Direct settlement to Pakistani banks via State Bank of Pakistan (SBP) & 1Link. Configured monitored corridor: Pakistan 🇵🇰 (1 active jurisdiction).
+              <span className="font-bold block text-sm">Pakistani Banks & Wallets Payout Rail</span>
+              Instant payout to Easypaisa, JazzCash, SadaPay, NayaPay, UPaisa, Zindigi, Raast & all Pakistani commercial banks via State Bank of Pakistan (SBP) & 1Link. Available worldwide with 0% fee.
             </div>
           </div>
           {!pkSuccess ? (
@@ -636,8 +636,8 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
                       🇵🇰
                     </div>
                     <div>
-                      <h3 className="font-bold text-white text-base">Exchange & Send to Pakistani Bank</h3>
-                      <p className="text-xs text-zinc-400">Direct settlement via State Bank of Pakistan (SBP) & 1Link</p>
+                      <h3 className="font-bold text-white text-base">Exchange & Send to Pakistani Banks & Wallets</h3>
+                      <p className="text-xs text-zinc-400">Direct settlement to Easypaisa, JazzCash, Raast & all 1Link commercial banks</p>
                     </div>
                   </div>
                   <span className="text-xs font-mono text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
@@ -820,21 +820,21 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
                       </div>
                     </div>
 
-                    {/* SELECTED BANK DISPLAY */}
+                    {/* SELECTED BANK / WALLET DISPLAY */}
                     <div className="p-4 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-2">
                       <div className="flex justify-between items-center text-xs">
                         <span className="font-bold text-zinc-300 uppercase tracking-wider">
-                          Destination Pakistani Bank
+                          Destination Pakistani Bank / Wallet
                         </span>
                         <span className="text-indigo-400 font-medium text-[11px]">
-                          Choose from 27 banks on the right →
+                          Choose from {ALL_PAKISTANI_BANKS.length} banks & wallets →
                         </span>
                       </div>
 
                       <div className="p-3 rounded-xl bg-zinc-950 border border-indigo-500/40 flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white font-bold text-sm shadow-md">
-                            {selectedBank.code}
+                          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${selectedBank.color || 'from-indigo-600 to-indigo-800'} flex items-center justify-center text-white font-bold text-xs shadow-md font-mono`}>
+                            {selectedBank.code.slice(0, 4)}
                           </div>
                           <div>
                             <div className="font-bold text-white text-sm flex items-center gap-2">
@@ -844,14 +844,14 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
                               </span>
                             </div>
                             <span className="text-xs text-zinc-400 font-mono">
-                              Bank Code: {selectedBank.code} • 1Link & Raast Instant Transfer
+                              Code: {selectedBank.code} • 1Link, Raast & Mobile Clearing
                             </span>
                           </div>
                         </div>
 
                         <div className="text-right">
                           <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold border border-emerald-500/20">
-                            Active Bank
+                            Active Destination
                           </span>
                         </div>
                       </div>
@@ -876,14 +876,30 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
 
                       <div className="space-y-1.5">
                         <label className="text-xs font-medium text-zinc-300">
-                          Account Number / IBAN *
+                          {selectedBank.category === 'Digital & Wallets'
+                            ? `${selectedBank.shortName} Mobile Number / Wallet ID *`
+                            : 'Account Number / IBAN *'}
                         </label>
                         <input
                           type="text"
                           required
                           value={accountNumber}
                           onChange={(e) => setAccountNumber(e.target.value)}
-                          placeholder="e.g. PK36 MEZN 0001 2345 6789 0101"
+                          placeholder={
+                            selectedBank.id === 'easypaisa'
+                              ? 'e.g. 0345 1234567 or 0300 9876543 (Easypaisa Number)'
+                              : selectedBank.id === 'jazzcash'
+                              ? 'e.g. 0300 1234567 or 0321 7654321 (JazzCash Number)'
+                              : selectedBank.id === 'sadapay'
+                              ? 'e.g. 0300 1234567 or PK36 SADA...'
+                              : selectedBank.id === 'nayapay'
+                              ? 'e.g. @nayapay_user or 0300 1234567'
+                              : selectedBank.id === 'upaisa'
+                              ? 'e.g. 0333 1234567 (UPaisa Number)'
+                              : selectedBank.id === 'raast'
+                              ? 'e.g. 03001234567 or Raast IBAN'
+                              : 'e.g. PK36 MEZN 0001 2345 6789 0101'
+                          }
                           id="recipient-account-input"
                           className="w-full bg-zinc-900 border border-zinc-800 focus:border-indigo-500 rounded-xl py-2.5 px-3.5 text-xs text-white font-mono outline-none"
                         />
@@ -940,14 +956,14 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
                 )}
               </div>
 
-              {/* RIGHT COLUMN: SHOW ALL PAKISTANI BANKS (5 cols) */}
+              {/* RIGHT COLUMN: SHOW ALL PAKISTANI BANKS & WALLETS (5 cols) */}
               <div className="lg:col-span-5 p-6 rounded-3xl bg-[#0D0D0D] border border-zinc-800 shadow-xl space-y-4">
                 <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
                   <div className="flex items-center gap-2">
                     <Landmark className="w-4 h-4 text-emerald-400" />
-                    <h3 className="font-bold text-white text-sm">All Pakistani Banks ({ALL_PAKISTANI_BANKS.length})</h3>
+                    <h3 className="font-bold text-white text-sm">Pakistani Banks & Wallets ({ALL_PAKISTANI_BANKS.length})</h3>
                   </div>
-                  <span className="text-[11px] text-zinc-400">Click bank to select</span>
+                  <span className="text-[11px] text-zinc-400">Click to select</span>
                 </div>
 
                 {/* Bank Search Input */}
@@ -957,25 +973,31 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
                     type="text"
                     value={bankSearchQuery}
                     onChange={(e) => setBankSearchQuery(e.target.value)}
-                    placeholder="Search Pakistani banks (e.g. Meezan, HBL, UBL)..."
+                    placeholder="Search banks & wallets (Easypaisa, JazzCash, Meezan, HBL)..."
                     className="w-full bg-zinc-900 border border-zinc-800 focus:border-indigo-500 rounded-xl py-2 pl-9 pr-3 text-xs text-white outline-none placeholder-zinc-500"
                   />
                 </div>
 
                 {/* Category Filter Pills */}
                 <div className="flex gap-1.5 overflow-x-auto pb-1 text-xs">
-                  {['all', 'Major Commercial', 'Islamic Banking', 'Digital & Wallets', 'Public / Provincial'].map((cat) => (
+                  {[
+                    { id: 'all', label: 'All Methods' },
+                    { id: 'Digital & Wallets', label: '📱 Wallets (Easypaisa, JazzCash...)' },
+                    { id: 'Major Commercial', label: '🏛️ Commercial Banks' },
+                    { id: 'Islamic Banking', label: '🌙 Islamic Banking' },
+                    { id: 'Public / Provincial', label: '🏦 Public / Provincial' },
+                  ].map((cat) => (
                     <button
-                      key={cat}
+                      key={cat.id}
                       type="button"
-                      onClick={() => setBankCategoryFilter(cat)}
+                      onClick={() => setBankCategoryFilter(cat.id)}
                       className={`px-2.5 py-1 rounded-lg shrink-0 text-[11px] transition-all cursor-pointer ${
-                        bankCategoryFilter === cat
+                        bankCategoryFilter === cat.id
                           ? 'bg-indigo-600 text-white font-bold'
                           : 'bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800'
                       }`}
                     >
-                      {cat === 'all' ? 'All' : cat}
+                      {cat.label}
                     </button>
                   ))}
                 </div>
@@ -1033,29 +1055,29 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
               </div>
             </div>
           ) : (
-            /* TRANSFER COMPLETED VIEW (REQUESTED) */
-            <div className="max-w-2xl mx-auto p-6 sm:p-8 rounded-3xl bg-[#0D0D0D] border-2 border-emerald-500/40 shadow-2xl space-y-6 text-center">
-              {/* Glowing Success Badge */}
-              <div className="w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center text-emerald-400 mx-auto shadow-xl shadow-emerald-500/30">
-                <CheckCircle2 className="w-11 h-11 text-emerald-400" />
+            /* TRANSFER PENDING VIEW */
+            <div className="max-w-2xl mx-auto p-6 sm:p-8 rounded-3xl bg-[#0D0D0D] border-2 border-amber-500/40 shadow-2xl space-y-6 text-center">
+              {/* Glowing Pending Badge */}
+              <div className="w-20 h-20 rounded-full bg-amber-500/20 border-2 border-amber-500 flex items-center justify-center text-amber-400 mx-auto shadow-xl shadow-amber-500/30">
+                <Clock className="w-11 h-11 text-amber-400 animate-pulse" />
               </div>
 
               <div className="space-y-2">
-                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-bold uppercase tracking-wider">
-                  <Check className="w-3.5 h-3.5" /> Transfer Authorized & Cleared
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider">
+                  <Clock className="w-3.5 h-3.5" /> Pending Transaction
                 </div>
 
                 <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                  Transfer Completed!
+                  Pending Transaction
                 </h2>
 
                 {/* PROMINENT REQUESTED BANNER */}
-                <div className="p-3.5 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 text-sm sm:text-base font-extrabold max-w-lg mx-auto shadow-inner">
-                  🎉 You will get this payment shortly
+                <div className="p-3.5 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-300 text-sm sm:text-base font-extrabold max-w-lg mx-auto shadow-inner">
+                  ⏳ Pending transaction: Your payment will be sent to you shortly
                 </div>
 
                 <p className="text-xs text-zinc-400 max-w-md mx-auto">
-                  The amount has been deducted from your total balance and dispatched via the State Bank of Pakistan interbank clearing network.
+                  The amount has been deducted from your total balance and queued. The payment will be sent shortly via the State Bank of Pakistan interbank clearing network.
                 </p>
               </div>
 
@@ -1570,17 +1592,17 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
           ) : (
             /* INTERNATIONAL SUCCESS VIEW */
             <div className="max-w-2xl mx-auto p-6 rounded-3xl bg-[#0D0D0D] border border-zinc-800 shadow-2xl space-y-6 animate-in fade-in duration-300">
-              {/* SUCCESS BANNER */}
-              <div className="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/40 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
-                  <CheckCircle2 className="w-6 h-6" />
+              {/* PENDING BANNER */}
+              <div className="p-4 rounded-2xl bg-amber-500/15 border border-amber-500/40 flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+                  <Clock className="w-6 h-6 animate-pulse" />
                 </div>
                 <div>
-                  <h3 className="text-base font-black text-emerald-300 uppercase tracking-wide">
-                    Transfer Completed! You will get this payment shortly
+                  <h3 className="text-base font-black text-amber-300 uppercase tracking-wide">
+                    Pending transaction: Your payment will be sent to you shortly
                   </h3>
-                  <p className="text-xs text-emerald-400/90">
-                    Payment successfully authorized and routed to {completedIntlTransfer?.providerName}.
+                  <p className="text-xs text-amber-400/90">
+                    Payment successfully authorized and queued with {completedIntlTransfer?.providerName}. Direct settlement in progress.
                   </p>
                 </div>
               </div>

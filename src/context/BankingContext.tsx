@@ -472,7 +472,7 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
       })
     );
 
-    // Create completed Transaction
+    // Create pending Transaction
     const randomHex = Math.random().toString(36).substring(2, 7).toUpperCase();
     const timestamp = new Date().toISOString();
     const newTx: Transaction = {
@@ -484,7 +484,7 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
       amount: amount,
       currency: sourceCurrency,
       type: 'expense',
-      status: 'completed',
+      status: 'pending',
       timestamp: timestamp,
       fee: fee,
       note: note || `Outward transfer to ${recipientName} via ${provider || recipientCountry}`,
@@ -495,12 +495,10 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setTransactions((prev) => [newTx, ...prev]);
 
     addNotification({
-      title: `Transfer Sent: -${formatMoney(amount, sourceCurrency)}`,
-      description: `Successfully sent ${formatMoney(amount, sourceCurrency)} to ${recipientName} via ${provider || recipientCountry}.`,
+      title: `Payment Pending: -${formatMoney(amount, sourceCurrency)}`,
+      description: `Your payment will be sent to you shortly. Outward transfer to ${recipientName} (${recipientCountry}) is in pending settlement queue.`,
       type: 'payment',
     });
-
-    triggerConfetti();
 
     return {
       success: true,

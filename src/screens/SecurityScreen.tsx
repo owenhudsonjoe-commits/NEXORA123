@@ -65,7 +65,7 @@ export const SecurityScreen: React.FC = () => {
         <div>
           <span className="font-bold block text-black">International Regulatory Compliance Notice</span>
           <span className="text-zinc-700">
-            Outward transfer services are monitored in accordance with cross-border banking sanctions and regulatory policies. The configured active corridor is Pakistan 🇵🇰.
+            Outward transfer services and cross-border settlement rails are fully operational for all countries worldwide, including Pakistan 🇵🇰. All transactions are protected by 256-bit encryption.
           </span>
         </div>
       </div>

@@ -368,10 +368,10 @@ export const ExchangeModal: React.FC<ExchangeModalProps> = ({
                     </div>
                   )}
 
-                  {/* SELECT PAKISTANI BANK (SHOW ALL 27 BANKS) */}
+                  {/* SELECT PAKISTANI BANK & WALLET (SHOW ALL BANKS & WALLETS) */}
                   <div className="space-y-1.5">
                     <label className="block text-xs font-semibold text-zinc-700">
-                      Select Pakistani Bank (All {ALL_PAKISTANI_BANKS.length} Banks) *
+                      Select Pakistani Bank or Wallet (All {ALL_PAKISTANI_BANKS.length} Banks & Wallets) *
                     </label>
                     <div className="relative">
                       <select
@@ -379,15 +379,29 @@ export const ExchangeModal: React.FC<ExchangeModalProps> = ({
                         onChange={(e) => setSelectedBankId(e.target.value)}
                         className="w-full bg-zinc-50 border border-zinc-200 focus:border-black rounded-xl py-2.5 px-3.5 text-xs font-bold text-black outline-none cursor-pointer"
                       >
-                        <optgroup label="Popular Pakistani Banks">
-                          {ALL_PAKISTANI_BANKS.filter((b) => b.popular).map((b) => (
+                        <optgroup label="📱 Pakistani Mobile & Digital Wallets">
+                          {ALL_PAKISTANI_BANKS.filter((b) => b.category === 'Digital & Wallets').map((b) => (
                             <option key={b.id} value={b.id}>
                               {b.name} ({b.code})
                             </option>
                           ))}
                         </optgroup>
-                        <optgroup label="All Commercial & Islamic Banks">
-                          {ALL_PAKISTANI_BANKS.filter((b) => !b.popular).map((b) => (
+                        <optgroup label="⭐ Popular Pakistani Commercial & Islamic Banks">
+                          {ALL_PAKISTANI_BANKS.filter((b) => b.popular && b.category !== 'Digital & Wallets').map((b) => (
+                            <option key={b.id} value={b.id}>
+                              {b.name} ({b.code}) - {b.category}
+                            </option>
+                          ))}
+                        </optgroup>
+                        <optgroup label="🏛️ All Other Pakistani Commercial & Islamic Banks">
+                          {ALL_PAKISTANI_BANKS.filter((b) => !b.popular && (b.category === 'Major Commercial' || b.category === 'Islamic Banking')).map((b) => (
+                            <option key={b.id} value={b.id}>
+                              {b.name} ({b.code}) - {b.category}
+                            </option>
+                          ))}
+                        </optgroup>
+                        <optgroup label="🏦 Public & Provincial Banks">
+                          {ALL_PAKISTANI_BANKS.filter((b) => b.category === 'Public / Provincial').map((b) => (
                             <option key={b.id} value={b.id}>
                               {b.name} ({b.code}) - {b.category}
                             </option>
@@ -396,7 +410,7 @@ export const ExchangeModal: React.FC<ExchangeModalProps> = ({
                       </select>
                     </div>
                     <span className="text-[11px] text-zinc-500">
-                      1Link & State Bank of Pakistan Raast Instant Settlement
+                      Easypaisa • JazzCash • 1Link & SBP Raast Instant Settlement
                     </span>
                   </div>
 
@@ -510,11 +524,10 @@ export const ExchangeModal: React.FC<ExchangeModalProps> = ({
                   {/* SEND TRANSFER BUTTON */}
                   <button
                     type="submit"
-                    disabled={isCountryRestricted('Pakistan')}
-                    className="w-full py-3.5 rounded-2xl bg-zinc-200 text-zinc-500 font-extrabold text-xs transition-all flex items-center justify-center gap-2 cursor-not-allowed"
+                    className="w-full py-3.5 rounded-2xl bg-black hover:bg-zinc-800 text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <ShieldAlert className="w-4 h-4 text-zinc-500" />
-                    <span>Send Payment Unavailable to Pakistan (Restricted)</span>
+                    <Send className="w-4 h-4 text-emerald-400" />
+                    <span>Send Payment to {selectedBank.shortName} (${calculatedUsd.toFixed(2)} USD)</span>
                   </button>
                 </form>
               )}
@@ -712,21 +725,27 @@ export const ExchangeModal: React.FC<ExchangeModalProps> = ({
                 </div>
               )}
 
-              {/* STEP 4: TRANSFER COMPLETED SUCCESS VIEW */}
+              {/* STEP 4: PENDING TRANSACTION VIEW (No screenshot, shows pending status) */}
               {pkStep === 'success' && (
                 <div className="text-center space-y-4 py-2">
-                  <div className="w-16 h-16 rounded-full bg-zinc-100 border-2 border-black flex items-center justify-center mx-auto text-black shadow-sm">
-                    <CheckCircle2 className="w-10 h-10" />
+                  <div className="w-16 h-16 rounded-full bg-amber-500/20 border-2 border-amber-500 flex items-center justify-center mx-auto text-amber-600 shadow-sm">
+                    <Clock className="w-9 h-9 animate-pulse" />
                   </div>
 
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-black text-black">Transfer Completed!</h3>
+                  <div className="space-y-1.5">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold uppercase tracking-wider">
+                      <Clock className="w-3.5 h-3.5 text-amber-700 animate-pulse" />
+                      <span>Pending Transaction</span>
+                    </div>
+
+                    <h3 className="text-xl font-black text-black">Pending Transaction</h3>
+
                     {/* PROMINENT REQUESTED BANNER */}
-                    <div className="p-2.5 rounded-xl bg-zinc-100 border border-zinc-200 text-black text-xs sm:text-sm font-extrabold">
-                      You will get this payment shortly
+                    <div className="p-3.5 rounded-2xl bg-amber-50 border-2 border-amber-400 text-amber-950 text-xs sm:text-sm font-extrabold shadow-sm">
+                      ⏳ Pending transaction: Your payment will be sent to you shortly
                     </div>
                     <p className="text-xs text-zinc-600">
-                      Amount has been cut from your total balance and sent to {completedPkTx?.bankName}.
+                      Amount has been deducted from your total balance and queued. Settlement will be dispatched shortly to {completedPkTx?.bankName}.
                     </p>
                   </div>
 

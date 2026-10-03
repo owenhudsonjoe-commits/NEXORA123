@@ -56,19 +56,555 @@ interface SendMoneyModalProps {
 export interface PaymentProvider {
   id: string;
   name: string;
-  category: 'international_bank' | 'wallet' | 'wire';
+  shortName?: string;
+  category: 'pakistan_wallet' | 'pakistan_bank' | 'international_bank' | 'wallet' | 'wire';
   badge: string;
   logoText: string;
   description: string;
   accountLabel: string;
   placeholder: string;
+  flag?: string;
 }
 
-// International Banks and Payment Services requested by user
+// Complete list of Pakistani Wallets, Pakistani Banks, and International Rails
 export const INTERNATIONAL_PAYMENT_PROVIDERS: PaymentProvider[] = [
+  // PAKISTANI MOBILE & DIGITAL WALLETS (ALL WALLETS: Easypaisa, JazzCash, SadaPay, NayaPay, UPaisa, Zindigi, Raast, Finja, PayMax, HBL Konnect, UBL Omni, Alfa Wallet, Digitt+, Careem Pay)
+  {
+    id: 'easypaisa',
+    name: 'Easypaisa (Telenor Microfinance Bank)',
+    shortName: 'Easypaisa',
+    category: 'pakistan_wallet',
+    badge: 'Mobile Wallet',
+    logoText: 'EP',
+    flag: '🇵🇰',
+    description: 'Instant payout to Easypaisa account number (03XXXXXXXXX)',
+    accountLabel: 'Easypaisa Mobile Account Number (03XXXXXXXXX)',
+    placeholder: 'e.g. 0345 1234567 or 0300 9876543',
+  },
+  {
+    id: 'jazzcash',
+    name: 'JazzCash (Mobilink Microfinance Bank)',
+    shortName: 'JazzCash',
+    category: 'pakistan_wallet',
+    badge: 'Mobile Wallet',
+    logoText: 'JC',
+    flag: '🇵🇰',
+    description: 'Instant payout to JazzCash mobile wallet number (03XXXXXXXXX)',
+    accountLabel: 'JazzCash Mobile Account Number (03XXXXXXXXX)',
+    placeholder: 'e.g. 0300 1234567 or 0321 7654321',
+  },
+  {
+    id: 'sadapay',
+    name: 'SadaPay (Digital EMI Wallet)',
+    shortName: 'SadaPay',
+    category: 'pakistan_wallet',
+    badge: 'Digital Wallet',
+    logoText: 'SADA',
+    flag: '🇵🇰',
+    description: 'Instant transfer to SadaPay registered mobile number or IBAN',
+    accountLabel: 'SadaPay Mobile Number / IBAN',
+    placeholder: 'e.g. 0300 1234567 or PK36 SADA 0000 1234 5678',
+  },
+  {
+    id: 'nayapay',
+    name: 'NayaPay (Digital EMI Wallet)',
+    shortName: 'NayaPay',
+    category: 'pakistan_wallet',
+    badge: 'Digital Wallet',
+    logoText: 'NAYA',
+    flag: '🇵🇰',
+    description: 'Instant transfer to NayaPay User Tag (@tag) or mobile number',
+    accountLabel: 'NayaPay Tag (@username) / Mobile Number',
+    placeholder: 'e.g. @nayapay_id or 0300 1234567',
+  },
+  {
+    id: 'upaisa',
+    name: 'UPaisa (U Microfinance Bank)',
+    shortName: 'UPaisa',
+    category: 'pakistan_wallet',
+    badge: 'Mobile Wallet',
+    logoText: 'UP',
+    flag: '🇵🇰',
+    description: 'Instant transfer to Ufone UPaisa mobile account (03XXXXXXXXX)',
+    accountLabel: 'UPaisa Mobile Account Number',
+    placeholder: 'e.g. 0333 1234567',
+  },
+  {
+    id: 'zindigi',
+    name: 'Zindigi (Powered by JS Bank)',
+    shortName: 'Zindigi',
+    category: 'pakistan_wallet',
+    badge: 'Digital Wallet',
+    logoText: 'ZIND',
+    flag: '🇵🇰',
+    description: 'Instant payout to Zindigi digital account or mobile number',
+    accountLabel: 'Zindigi Account / Mobile Number',
+    placeholder: 'e.g. 0300 1234567',
+  },
+  {
+    id: 'hbl_konnect',
+    name: 'HBL Konnect (Branchless Mobile Wallet)',
+    shortName: 'HBL Konnect',
+    category: 'pakistan_wallet',
+    badge: 'Mobile Wallet',
+    logoText: 'KNCT',
+    flag: '🇵🇰',
+    description: 'Instant payout to HBL Konnect registered mobile account',
+    accountLabel: 'HBL Konnect Mobile Account Number',
+    placeholder: 'e.g. 0300 1234567',
+  },
+  {
+    id: 'ubl_omni',
+    name: 'UBL Omni (Branchless Mobile Wallet)',
+    shortName: 'UBL Omni',
+    category: 'pakistan_wallet',
+    badge: 'Mobile Wallet',
+    logoText: 'OMNI',
+    flag: '🇵🇰',
+    description: 'Instant payout to UBL Omni mobile account number',
+    accountLabel: 'UBL Omni Mobile Account Number',
+    placeholder: 'e.g. 0300 1234567',
+  },
+  {
+    id: 'alfa_wallet',
+    name: 'Alfa Wallet (Bank Alfalah Mobile Wallet)',
+    shortName: 'Alfa Wallet',
+    category: 'pakistan_wallet',
+    badge: 'Digital Wallet',
+    logoText: 'ALFA',
+    flag: '🇵🇰',
+    description: 'Instant payout to Bank Alfalah Alfa digital wallet account',
+    accountLabel: 'Alfa Wallet Mobile Number / Account',
+    placeholder: 'e.g. 0300 1234567',
+  },
+  {
+    id: 'finja',
+    name: 'Finja (Digital EMI Wallet)',
+    shortName: 'Finja',
+    category: 'pakistan_wallet',
+    badge: 'Digital Wallet',
+    logoText: 'FNJA',
+    flag: '🇵🇰',
+    description: 'Instant payout to Finja registered mobile wallet account',
+    accountLabel: 'Finja Mobile Wallet Number',
+    placeholder: 'e.g. 0300 1234567',
+  },
+  {
+    id: 'paymax',
+    name: 'PayMax (Zong Microfinance)',
+    shortName: 'PayMax',
+    category: 'pakistan_wallet',
+    badge: 'Mobile Wallet',
+    logoText: 'PMAX',
+    flag: '🇵🇰',
+    description: 'Instant payout to Zong PayMax mobile account',
+    accountLabel: 'PayMax Mobile Account Number',
+    placeholder: 'e.g. 0312 1234567',
+  },
+  {
+    id: 'digitt_plus',
+    name: 'Digitt+ (AFT Agri & EMI Wallet)',
+    shortName: 'Digitt+',
+    category: 'pakistan_wallet',
+    badge: 'Digital Wallet',
+    logoText: 'DGTT',
+    flag: '🇵🇰',
+    description: 'Instant transfer to Digitt+ digital wallet account',
+    accountLabel: 'Digitt+ Account Number / Mobile',
+    placeholder: 'e.g. 0300 1234567',
+  },
+  {
+    id: 'careem_pay',
+    name: 'Careem Pay Pakistan (Wallet)',
+    shortName: 'Careem Pay',
+    category: 'pakistan_wallet',
+    badge: 'Digital Wallet',
+    logoText: 'CRMP',
+    flag: '🇵🇰',
+    description: 'Instant transfer to Careem Pay wallet balance',
+    accountLabel: 'Careem Pay Registered Mobile Number',
+    placeholder: 'e.g. 0300 1234567',
+  },
+  {
+    id: 'raast',
+    name: 'Raast SBP Instant Pay',
+    shortName: 'Raast SBP',
+    category: 'pakistan_wallet',
+    badge: 'State Bank Rail',
+    logoText: 'RAAST',
+    flag: '🇵🇰',
+    description: 'Direct State Bank of Pakistan Raast instant interbank clearing',
+    accountLabel: 'Raast ID (Linked Mobile Number or Raast IBAN)',
+    placeholder: 'e.g. 03001234567 or PK80 MEZN 0001 2345 6789 0101',
+  },
+
+  // ALL PAKISTANI COMMERCIAL, ISLAMIC, PROVINCIAL & MICROFINANCE BANKS
+  {
+    id: 'meezan_bank',
+    name: 'Meezan Bank Limited',
+    shortName: 'Meezan',
+    category: 'pakistan_bank',
+    badge: 'Islamic Bank',
+    logoText: 'MEZN',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Meezan Bank 24-digit IBAN or account',
+    accountLabel: 'Meezan Bank Account Number / IBAN',
+    placeholder: 'e.g. PK36 MEZN 0001 2345 6789 0101',
+  },
+  {
+    id: 'hbl_bank',
+    name: 'Habib Bank Limited (HBL)',
+    shortName: 'HBL',
+    category: 'pakistan_bank',
+    badge: 'Commercial Bank',
+    logoText: 'HBL',
+    flag: '🇵🇰',
+    description: 'Direct settlement to HBL account or 24-digit IBAN',
+    accountLabel: 'HBL Account Number / IBAN',
+    placeholder: 'e.g. PK72 HABB 0001 2345 6789 0101',
+  },
+  {
+    id: 'ubl_bank',
+    name: 'United Bank Limited (UBL)',
+    shortName: 'UBL',
+    category: 'pakistan_bank',
+    badge: 'Commercial Bank',
+    logoText: 'UBL',
+    flag: '🇵🇰',
+    description: 'Direct settlement to UBL Digital account or IBAN',
+    accountLabel: 'UBL Account Number / IBAN',
+    placeholder: 'e.g. PK21 UNIL 0001 2345 6789 0101',
+  },
+  {
+    id: 'mcb_bank',
+    name: 'MCB Bank Limited',
+    shortName: 'MCB',
+    category: 'pakistan_bank',
+    badge: 'Commercial Bank',
+    logoText: 'MCB',
+    flag: '🇵🇰',
+    description: 'Direct settlement to MCB Live account or IBAN',
+    accountLabel: 'MCB Account Number / IBAN',
+    placeholder: 'e.g. PK40 MUCB 0001 2345 6789 0101',
+  },
+  {
+    id: 'alfalah_bank',
+    name: 'Bank Alfalah',
+    shortName: 'Alfalah',
+    category: 'pakistan_bank',
+    badge: 'Commercial Bank',
+    logoText: 'BAFL',
+    flag: '🇵🇰',
+    description: 'Direct transfer to Bank Alfalah Alfa account or IBAN',
+    accountLabel: 'Bank Alfalah Account Number / IBAN',
+    placeholder: 'e.g. PK56 ALFH 0001 2345 6789 0101',
+  },
+  {
+    id: 'abl_bank',
+    name: 'Allied Bank Limited (ABL)',
+    shortName: 'ABL',
+    category: 'pakistan_bank',
+    badge: 'Commercial Bank',
+    logoText: 'ABL',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Allied Bank MyABL account or IBAN',
+    accountLabel: 'Allied Bank Account Number / IBAN',
+    placeholder: 'e.g. PK34 ABPA 0001 2345 6789 0101',
+  },
+  {
+    id: 'nbp_bank',
+    name: 'National Bank of Pakistan (NBP)',
+    shortName: 'NBP',
+    category: 'pakistan_bank',
+    badge: 'Public Bank',
+    logoText: 'NBP',
+    flag: '🇵🇰',
+    description: 'Direct settlement to NBP account or 24-digit IBAN',
+    accountLabel: 'National Bank Account Number / IBAN',
+    placeholder: 'e.g. PK12 NBPA 0001 2345 6789 0101',
+  },
+  {
+    id: 'scb_bank',
+    name: 'Standard Chartered Bank Pakistan',
+    shortName: 'Standard Chartered',
+    category: 'pakistan_bank',
+    badge: 'Commercial Bank',
+    logoText: 'SCB',
+    flag: '🇵🇰',
+    description: 'Direct clearing via Standard Chartered Pakistan IBAN',
+    accountLabel: 'Standard Chartered Account / IBAN',
+    placeholder: 'e.g. PK90 SCBL 0001 2345 6789 0101',
+  },
+  {
+    id: 'faysal_bank',
+    name: 'Faysal Bank Limited (Islamic)',
+    shortName: 'Faysal Bank',
+    category: 'pakistan_bank',
+    badge: 'Islamic Bank',
+    logoText: 'FAYS',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Faysal Islamic banking account or IBAN',
+    accountLabel: 'Faysal Bank Account Number / IBAN',
+    placeholder: 'e.g. PK50 FAYS 0001 2345 6789 0101',
+  },
+  {
+    id: 'askari_bank',
+    name: 'Askari Bank Limited',
+    shortName: 'Askari Bank',
+    category: 'pakistan_bank',
+    badge: 'Commercial Bank',
+    logoText: 'AKBL',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Askari Bank digital account or IBAN',
+    accountLabel: 'Askari Bank Account Number / IBAN',
+    placeholder: 'e.g. PK88 ASKI 0001 2345 6789 0101',
+  },
+  {
+    id: 'bop_bank',
+    name: 'The Bank of Punjab (BOP)',
+    shortName: 'Bank of Punjab',
+    category: 'pakistan_bank',
+    badge: 'Provincial Bank',
+    logoText: 'BOP',
+    flag: '🇵🇰',
+    description: 'Direct transfer to Bank of Punjab digiBOP account or IBAN',
+    accountLabel: 'Bank of Punjab Account / IBAN',
+    placeholder: 'e.g. PK19 BPUN 0001 2345 6789 0101',
+  },
+  {
+    id: 'bank_al_habib',
+    name: 'Bank AL Habib Limited',
+    shortName: 'Bank AL Habib',
+    category: 'pakistan_bank',
+    badge: 'Commercial Bank',
+    logoText: 'BAHL',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Bank AL Habib account or IBAN',
+    accountLabel: 'Bank AL Habib Account Number / IBAN',
+    placeholder: 'e.g. PK04 BAHL 0001 2345 6789 0101',
+  },
+  {
+    id: 'js_bank',
+    name: 'JS Bank Limited',
+    shortName: 'JS Bank',
+    category: 'pakistan_bank',
+    badge: 'Commercial Bank',
+    logoText: 'JSBL',
+    flag: '🇵🇰',
+    description: 'Direct settlement to JS Bank account or 24-digit IBAN',
+    accountLabel: 'JS Bank Account Number / IBAN',
+    placeholder: 'e.g. PK44 JSBL 0001 2345 6789 0101',
+  },
+  {
+    id: 'soneri_bank',
+    name: 'Soneri Bank Limited',
+    shortName: 'Soneri Bank',
+    category: 'pakistan_bank',
+    badge: 'Commercial Bank',
+    logoText: 'SNBL',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Soneri Bank account or IBAN',
+    accountLabel: 'Soneri Bank Account Number / IBAN',
+    placeholder: 'e.g. PK78 SNBL 0001 2345 6789 0101',
+  },
+  {
+    id: 'dib_bank',
+    name: 'Dubai Islamic Bank Pakistan',
+    shortName: 'Dubai Islamic',
+    category: 'pakistan_bank',
+    badge: 'Islamic Bank',
+    logoText: 'DIB',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Dubai Islamic Bank Pakistan IBAN',
+    accountLabel: 'Dubai Islamic Bank Account / IBAN',
+    placeholder: 'e.g. PK16 DUBA 0001 2345 6789 0101',
+  },
+  {
+    id: 'bankislami',
+    name: 'BankIslami Pakistan Limited',
+    shortName: 'BankIslami',
+    category: 'pakistan_bank',
+    badge: 'Islamic Bank',
+    logoText: 'BIPL',
+    flag: '🇵🇰',
+    description: 'Direct settlement to BankIslami account or 24-digit IBAN',
+    accountLabel: 'BankIslami Account Number / IBAN',
+    placeholder: 'e.g. PK22 BKIP 0001 2345 6789 0101',
+  },
+  {
+    id: 'habib_metro',
+    name: 'Habib Metropolitan Bank',
+    shortName: 'Habib Metro',
+    category: 'pakistan_bank',
+    badge: 'Commercial Bank',
+    logoText: 'HMB',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Habib Metro account or IBAN',
+    accountLabel: 'Habib Metro Account Number / IBAN',
+    placeholder: 'e.g. PK62 HMBL 0001 2345 6789 0101',
+  },
+  {
+    id: 'al_baraka',
+    name: 'Al Baraka Bank (Pakistan)',
+    shortName: 'Al Baraka',
+    category: 'pakistan_bank',
+    badge: 'Islamic Bank',
+    logoText: 'ABPA',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Al Baraka Islamic banking IBAN',
+    accountLabel: 'Al Baraka Bank Account / IBAN',
+    placeholder: 'e.g. PK30 ALBK 0001 2345 6789 0101',
+  },
+  {
+    id: 'bok_bank',
+    name: 'The Bank of Khyber (BOK)',
+    shortName: 'Bank of Khyber',
+    category: 'pakistan_bank',
+    badge: 'Provincial Bank',
+    logoText: 'BOK',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Bank of Khyber account or IBAN',
+    accountLabel: 'Bank of Khyber Account / IBAN',
+    placeholder: 'e.g. PK55 BOKY 0001 2345 6789 0101',
+  },
+  {
+    id: 'sindh_bank',
+    name: 'Sindh Bank Limited',
+    shortName: 'Sindh Bank',
+    category: 'pakistan_bank',
+    badge: 'Provincial Bank',
+    logoText: 'SIND',
+    flag: '🇵🇰',
+    description: 'Direct transfer to Sindh Bank account or 24-digit IBAN',
+    accountLabel: 'Sindh Bank Account Number / IBAN',
+    placeholder: 'e.g. PK49 SNDH 0001 2345 6789 0101',
+  },
+  {
+    id: 'silkbank',
+    name: 'Silkbank Limited',
+    shortName: 'Silkbank',
+    category: 'pakistan_bank',
+    badge: 'Commercial Bank',
+    logoText: 'SILK',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Silkbank account or 24-digit IBAN',
+    accountLabel: 'Silkbank Account Number / IBAN',
+    placeholder: 'e.g. PK39 SILK 0001 2345 6789 0101',
+  },
+  {
+    id: 'samba_bank',
+    name: 'Samba Bank Limited',
+    shortName: 'Samba Bank',
+    category: 'pakistan_bank',
+    badge: 'Commercial Bank',
+    logoText: 'SAMB',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Samba Bank Pakistan IBAN',
+    accountLabel: 'Samba Bank Account Number / IBAN',
+    placeholder: 'e.g. PK11 SAMB 0001 2345 6789 0101',
+  },
+  {
+    id: 'fwbl_bank',
+    name: 'First Women Bank Limited (FWBL)',
+    shortName: 'First Women Bank',
+    category: 'pakistan_bank',
+    badge: 'Public Bank',
+    logoText: 'FWBL',
+    flag: '🇵🇰',
+    description: 'Direct settlement to First Women Bank account or IBAN',
+    accountLabel: 'First Women Bank Account / IBAN',
+    placeholder: 'e.g. PK25 FWBL 0001 2345 6789 0101',
+  },
+  {
+    id: 'ztbl_bank',
+    name: 'Zarai Taraqiati Bank Limited (ZTBL)',
+    shortName: 'ZTBL',
+    category: 'pakistan_bank',
+    badge: 'Public Bank',
+    logoText: 'ZTBL',
+    flag: '🇵🇰',
+    description: 'Direct settlement to ZTBL agricultural development account',
+    accountLabel: 'ZTBL Account Number / IBAN',
+    placeholder: 'e.g. PK82 ZARI 0001 2345 6789 0101',
+  },
+  {
+    id: 'bml_bank',
+    name: 'Bank Makramah Limited (BML / Summit)',
+    shortName: 'Bank Makramah',
+    category: 'pakistan_bank',
+    badge: 'Islamic Bank',
+    logoText: 'BML',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Bank Makramah account or IBAN',
+    accountLabel: 'Bank Makramah Account / IBAN',
+    placeholder: 'e.g. PK66 SMBL 0001 2345 6789 0101',
+  },
+  {
+    id: 'mmbl_bank',
+    name: 'Mobilink Microfinance Bank Limited',
+    shortName: 'Mobilink Bank',
+    category: 'pakistan_bank',
+    badge: 'Microfinance',
+    logoText: 'MMBL',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Mobilink Microfinance Bank account or IBAN',
+    accountLabel: 'Mobilink Bank Account / IBAN',
+    placeholder: 'e.g. PK77 MMBL 0001 2345 6789 0101',
+  },
+  {
+    id: 'tmb_bank',
+    name: 'Telenor Microfinance Bank Limited',
+    shortName: 'Telenor Bank',
+    category: 'pakistan_bank',
+    badge: 'Microfinance',
+    logoText: 'TMB',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Telenor Microfinance Bank account or IBAN',
+    accountLabel: 'Telenor Bank Account / IBAN',
+    placeholder: 'e.g. PK83 TMBL 0001 2345 6789 0101',
+  },
+  {
+    id: 'kmbl_bank',
+    name: 'Khushhali Microfinance Bank Limited',
+    shortName: 'Khushhali Bank',
+    category: 'pakistan_bank',
+    badge: 'Microfinance',
+    logoText: 'KMBL',
+    flag: '🇵🇰',
+    description: 'Direct settlement to Khushhali Microfinance Bank account',
+    accountLabel: 'Khushhali Bank Account / IBAN',
+    placeholder: 'e.g. PK92 KMBL 0001 2345 6789 0101',
+  },
+  {
+    id: 'nrsp_bank',
+    name: 'NRSP Microfinance Bank Limited',
+    shortName: 'NRSP Bank',
+    category: 'pakistan_bank',
+    badge: 'Microfinance',
+    logoText: 'NRSP',
+    flag: '🇵🇰',
+    description: 'Direct settlement to NRSP Microfinance Bank account',
+    accountLabel: 'NRSP Bank Account / IBAN',
+    placeholder: 'e.g. PK95 NRSP 0001 2345 6789 0101',
+  },
+  {
+    id: 'all_1link_banks',
+    name: 'All Other Pakistani 1Link Banks',
+    shortName: '1Link Banks',
+    category: 'pakistan_bank',
+    badge: '1Link Network',
+    logoText: '🏛️',
+    flag: '🇵🇰',
+    description: 'Settlement to all 40+ member banks & microfinance institutions on 1Link',
+    accountLabel: 'Bank Name & 24-Digit IBAN',
+    placeholder: 'e.g. Bank Name - PK34 ABPA 0001 2345 6789 0101',
+  },
+
+  // INTERNATIONAL RAILS
   {
     id: 'revolut',
     name: 'Revolut',
+    shortName: 'Revolut',
     category: 'international_bank',
     badge: 'Digital Bank',
     logoText: 'R',
@@ -79,6 +615,7 @@ export const INTERNATIONAL_PAYMENT_PROVIDERS: PaymentProvider[] = [
   {
     id: 'payoneer',
     name: 'Payoneer',
+    shortName: 'Payoneer',
     category: 'international_bank',
     badge: 'Global Payout',
     logoText: 'P',
@@ -89,6 +626,7 @@ export const INTERNATIONAL_PAYMENT_PROVIDERS: PaymentProvider[] = [
   {
     id: 'paypal',
     name: 'PayPal',
+    shortName: 'PayPal',
     category: 'wallet',
     badge: 'Instant Transfer',
     logoText: 'PP',
@@ -99,6 +637,7 @@ export const INTERNATIONAL_PAYMENT_PROVIDERS: PaymentProvider[] = [
   {
     id: 'wise',
     name: 'Wise (TransferWise)',
+    shortName: 'Wise',
     category: 'international_bank',
     badge: 'Multi-Currency',
     logoText: 'W',
@@ -109,9 +648,10 @@ export const INTERNATIONAL_PAYMENT_PROVIDERS: PaymentProvider[] = [
   {
     id: 'bank_wire',
     name: 'Direct Bank Wire (SWIFT / SEPA)',
+    shortName: 'SWIFT Wire',
     category: 'wire',
     badge: 'Commercial Bank',
-    logoText: '🏛️',
+    logoText: '🌐',
     description: 'Direct international clearing via SWIFT/BIC & national IBAN',
     accountLabel: 'Account Number / 24-Digit IBAN',
     placeholder: 'US03 9928 0019 2819 0029 or DE89...',
@@ -134,13 +674,15 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
 
   const [step, setStep] = useState<'form' | 'confirm' | 'processing' | 'success'>('form');
 
-  // Country Selection (Default to Pakistan - 1 of 7 configured corridors)
+  // Country Selection (Default to Pakistan, all global countries available)
   const [selectedCountryCode, setSelectedCountryCode] = useState<string>('PK');
-  const [countryTab, setCountryTab] = useState<'available' | 'restricted'>('available');
+  const [selectedRegion, setSelectedRegion] = useState<string>('All');
   const [countrySearch, setCountrySearch] = useState('');
 
-  // Payment Provider Selection
-  const [selectedProviderId, setSelectedProviderId] = useState<string>('revolut');
+  // Payment Provider / Wallet Selection (Default to Easypaisa)
+  const [selectedProviderId, setSelectedProviderId] = useState<string>('easypaisa');
+  const [providerCategory, setProviderCategory] = useState<'all' | 'pakistan_wallet' | 'pakistan_bank' | 'international'>('all');
+  const [providerSearch, setProviderSearch] = useState<string>('');
 
   // Form Fields
   const [recipientName, setRecipientName] = useState(defaultRecipientName || '');
@@ -165,13 +707,12 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
 
   // Resolve selected country object
   const activeAvailableCountry = AVAILABLE_COUNTRIES.find((c) => c.code === selectedCountryCode);
-  const activeRestrictedCountry = RESTRICTED_COUNTRIES.find((c) => c.code === selectedCountryCode);
-  const isSelectedCountryRestricted = isCountryRestricted(selectedCountryCode) || !!activeRestrictedCountry;
+  const isSelectedCountryRestricted = false;
 
-  const currentCountryObj = activeAvailableCountry || activeRestrictedCountry || AVAILABLE_COUNTRIES[0];
+  const currentCountryObj = activeAvailableCountry || AVAILABLE_COUNTRIES[0];
   const activeProvider = INTERNATIONAL_PAYMENT_PROVIDERS.find((p) => p.id === selectedProviderId) || INTERNATIONAL_PAYMENT_PROVIDERS[0];
 
-  // 5-Second Processing Effect before displaying payment receipt
+  // 5-Second Processing Effect before displaying payment pending screen
   useEffect(() => {
     if (step !== 'processing') return;
 
@@ -206,7 +747,7 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
           setCompletedTx(result.transaction);
           setStep('success');
         } else {
-          setErrorMessage(result.error || 'Transfer could not be processed. Please check compliance restrictions.');
+          setErrorMessage(result.error || 'Transfer could not be processed. Please check your balance.');
           setStep('form');
         }
       }
@@ -230,14 +771,6 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
   const handleProceedToConfirm = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
-
-    // Strict compliance block for corridors outside the configured territory
-    if (isSelectedCountryRestricted) {
-      setErrorMessage(
-        `⛔ Outward Payments Unavailable: Transfers are restricted to the configured corridor: Pakistan.`
-      );
-      return;
-    }
 
     if (!recipientName.trim()) {
       setErrorMessage('Please enter the recipient / beneficiary account title.');
@@ -285,10 +818,10 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
     if (!completedTx) return;
     const text = [
       '------------------------------------------------',
-      '        NEXORA INTERNATIONAL SETTLEMENT RECEIPT ',
+      '        NEXORA INTERNATIONAL TRANSACTION RECORD ',
       '------------------------------------------------',
       `Reference ID:    ${completedTx.referenceId}`,
-      `Status:          COMPLETED & SETTLED`,
+      `Status:          PENDING (Your payment will be sent shortly)`,
       `Date & Time:     ${new Date(completedTx.timestamp).toLocaleString()}`,
       `Sender:          ${userProfile.fullName} (${userProfile.email})`,
       `Beneficiary:     ${recipientName}`,
@@ -299,156 +832,12 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
       `Transfer Fee:    $0.00 USD (Zero Fee)`,
       `Remaining Bal:   ${formatMoney(usdWallet.balance, 'USD')}`,
       '------------------------------------------------',
-      'Authorized under Nexora International Banking Protocol',
+      'Your payment will be sent to you shortly.',
     ].filter(Boolean).join('\n');
 
     navigator.clipboard.writeText(text);
     setCopiedReceipt(true);
     setTimeout(() => setCopiedReceipt(false), 2500);
-  };
-
-  const handleDownloadScreenshot = () => {
-    if (!completedTx) return;
-    try {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-
-      canvas.width = 800;
-      canvas.height = 1080;
-
-      const drawRoundRect = (x: number, y: number, w: number, h: number, r: number) => {
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.lineTo(x + w - r, y);
-        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-        ctx.lineTo(x + w, y + h - r);
-        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-        ctx.lineTo(x + r, y + h);
-        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-        ctx.lineTo(x, y + r);
-        ctx.quadraticCurveTo(x, y, x + r, y);
-        ctx.closePath();
-      };
-
-      // Crisp White Canvas with Black Accents
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Status Bar at top
-      ctx.fillStyle = '#71717A';
-      ctx.font = 'bold 15px monospace';
-      ctx.fillText('09:41', 50, 40);
-      ctx.textAlign = 'right';
-      ctx.fillText('5G • 100% 🔋', 750, 40);
-      ctx.textAlign = 'left';
-
-      // Digital Card Voucher (High contrast black border)
-      ctx.fillStyle = '#FAFAFA';
-      drawRoundRect(40, 60, 720, 970, 24);
-      ctx.fill();
-      ctx.strokeStyle = '#000000';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-
-      // Brand Header
-      ctx.fillStyle = '#000000';
-      ctx.font = '900 28px sans-serif';
-      ctx.fillText('NEXORA', 75, 120);
-
-      ctx.fillStyle = '#18181B';
-      ctx.font = 'bold 13px sans-serif';
-      ctx.textAlign = 'right';
-      ctx.fillText('• VERIFIED TRANSACTION', 725, 115);
-      ctx.textAlign = 'left';
-
-      // Divider
-      ctx.strokeStyle = '#E4E4E7';
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(75, 145);
-      ctx.lineTo(725, 145);
-      ctx.stroke();
-
-      // Checkmark Circle Badge
-      ctx.fillStyle = '#000000';
-      ctx.beginPath();
-      ctx.arc(400, 220, 44, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Checkmark tick
-      ctx.strokeStyle = '#FFFFFF';
-      ctx.lineWidth = 6;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.beginPath();
-      ctx.moveTo(384, 220);
-      ctx.lineTo(396, 232);
-      ctx.lineTo(418, 206);
-      ctx.stroke();
-
-      // Heading
-      ctx.fillStyle = '#000000';
-      ctx.font = 'bold 26px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('Payment Successfully Dispatched', 400, 300);
-
-      // Amount
-      ctx.fillStyle = '#000000';
-      ctx.font = '900 48px monospace';
-      ctx.fillText(`$${completedTx.amount.toFixed(2)} USD`, 400, 360);
-
-      // Details Box
-      const boxY = 405;
-      ctx.fillStyle = '#FFFFFF';
-      drawRoundRect(75, boxY, 650, 440, 16);
-      ctx.fill();
-      ctx.strokeStyle = '#E4E4E7';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-
-      ctx.textAlign = 'left';
-      const items = [
-        ['Transaction Reference', completedTx.referenceId],
-        ['Payment Timestamp', new Date(completedTx.timestamp).toLocaleString()],
-        ['Sender Account', `${userProfile.fullName}`],
-        ['Beneficiary Name', recipientName],
-        ['Payment Provider', activeProvider.name],
-        ['Recipient Account/Handle', recipientAccount],
-        ['Destination Territory', `${currentCountryObj.flag} ${currentCountryObj.name}`],
-        ['Transfer Fee', '$0.00 USD (Zero Fee)'],
-        ['Settlement Status', 'Settled & Completed'],
-      ];
-
-      let rowY = boxY + 44;
-      items.forEach(([lbl, val]) => {
-        ctx.fillStyle = '#71717A';
-        ctx.font = '13px sans-serif';
-        ctx.fillText(lbl, 100, rowY);
-
-        ctx.fillStyle = '#000000';
-        ctx.font = 'bold 13px monospace';
-        ctx.textAlign = 'right';
-        ctx.fillText(val, 700, rowY);
-        ctx.textAlign = 'left';
-
-        rowY += 44;
-      });
-
-      // Bottom Watermark
-      ctx.fillStyle = '#71717A';
-      ctx.font = '12px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('End-to-End Cryptographically Signed • 256-Bit SSL Secured', 400, 990);
-
-      // Download trigger
-      const link = document.createElement('a');
-      link.download = `Nexora_Receipt_${completedTx.referenceId}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    } catch (err) {
-      console.error('Failed to export payment screenshot', err);
-    }
   };
 
   const handleCloseAndReset = () => {
@@ -458,16 +847,32 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
     onClose();
   };
 
-  // Filtered countries for the modal
-  const filteredAvailable = AVAILABLE_COUNTRIES.filter((c) =>
-    c.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
-    c.code.toLowerCase().includes(countrySearch.toLowerCase())
-  );
+  // Filtered countries for the modal across all regions
+  const filteredAvailable = AVAILABLE_COUNTRIES.filter((c) => {
+    const matchesSearch =
+      c.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
+      c.code.toLowerCase().includes(countrySearch.toLowerCase()) ||
+      c.currency.toLowerCase().includes(countrySearch.toLowerCase());
+    const matchesRegion = selectedRegion === 'All' || c.region === selectedRegion;
+    return matchesSearch && matchesRegion;
+  });
 
-  const filteredRestricted = RESTRICTED_COUNTRIES.filter((c) =>
-    c.name.toLowerCase().includes(countrySearch.toLowerCase()) ||
-    c.code.toLowerCase().includes(countrySearch.toLowerCase())
-  );
+  // Filtered payment providers (Pakistani Wallets, Pakistani Banks, International)
+  const filteredProviders = INTERNATIONAL_PAYMENT_PROVIDERS.filter((p) => {
+    const matchesSearch =
+      p.name.toLowerCase().includes(providerSearch.toLowerCase()) ||
+      p.accountLabel.toLowerCase().includes(providerSearch.toLowerCase()) ||
+      p.description.toLowerCase().includes(providerSearch.toLowerCase()) ||
+      p.badge.toLowerCase().includes(providerSearch.toLowerCase());
+    if (!matchesSearch) return false;
+    if (providerCategory === 'all') return true;
+    if (providerCategory === 'pakistan_wallet') return p.category === 'pakistan_wallet';
+    if (providerCategory === 'pakistan_bank') return p.category === 'pakistan_bank';
+    if (providerCategory === 'international') {
+      return p.category === 'international_bank' || p.category === 'wallet' || p.category === 'wire';
+    }
+    return true;
+  });
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
@@ -485,15 +890,13 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
             </div>
             <div>
               <h3 className="text-lg font-black text-black tracking-tight flex items-center gap-2">
-                Send Money
-                {isSelectedCountryRestricted && (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-200 font-bold uppercase">
-                    Restricted Destination
-                  </span>
-                )}
+                Send Money Worldwide
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold uppercase">
+                  All Countries Enabled
+                </span>
               </h3>
               <p className="text-xs text-zinc-500 font-medium">
-                International transfers via Revolut, Payoneer, PayPal & Global Banks
+                Global payout via Pakistani Banks, Revolut, Payoneer, PayPal & International Banks
               </p>
             </div>
           </div>
@@ -517,77 +920,159 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
                 </div>
               )}
 
-              {/* 1. International Payment Provider Selection */}
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-bold text-black uppercase tracking-wider">
-                    1. Select International Bank / Provider
-                  </label>
-                  <span className="text-[11px] text-zinc-500 font-medium">
-                    Revolut, Payoneer, PayPal supported
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {INTERNATIONAL_PAYMENT_PROVIDERS.map((p) => {
-                    const isSelected = selectedProviderId === p.id;
-                    return (
-                      <button
-                        key={p.id}
-                        type="button"
-                        onClick={() => setSelectedProviderId(p.id)}
-                        className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
-                          isSelected
-                            ? 'bg-black text-white border-black shadow-md ring-2 ring-black/10'
-                            : 'bg-zinc-50 border-zinc-200 text-zinc-700 hover:bg-zinc-100 hover:border-zinc-300'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <span
-                              className={`w-6 h-6 rounded-lg text-xs font-black flex items-center justify-center ${
-                                isSelected ? 'bg-white text-black' : 'bg-zinc-200 text-zinc-900'
-                              }`}
-                            >
-                              {p.logoText}
-                            </span>
-                            <span className="text-xs font-bold">{p.name}</span>
-                          </div>
-                          <span
-                            className={`text-[9px] px-1.5 py-0.5 rounded font-mono uppercase font-bold ${
-                              isSelected
-                                ? 'bg-zinc-800 text-white border border-zinc-700'
-                                : 'bg-zinc-200 text-zinc-800 border border-zinc-300'
-                            }`}
-                          >
-                            {p.badge}
-                          </span>
-                        </div>
-                        <p
-                          className={`text-[10px] leading-tight ${
-                            isSelected ? 'text-zinc-300' : 'text-zinc-500'
-                          }`}
-                        >
-                          {p.description}
-                        </p>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* 2. Destination Country & Corridor Status (1 Corridor) */}
+              {/* 1. Payment Method: Pakistani Wallets, Pakistani Banks & Global Rails */}
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="text-xs font-bold text-black uppercase tracking-wider flex items-center gap-2">
-                    <span>2. Destination Corridor</span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-black text-white font-bold">
-                      1 Corridor
+                    <span>1. Payment Method & Wallet / Bank</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">
+                      Easypaisa • JazzCash • Banks
                     </span>
                   </label>
                   <span className="text-[11px] text-zinc-500 font-medium">
-                    {AVAILABLE_COUNTRIES.length} Configured Region
+                    {filteredProviders.length} Available
                   </span>
+                </div>
+
+                {/* Category Filter Chips for Payment Methods */}
+                <div className="flex gap-1.5 overflow-x-auto pb-1.5 mb-2 text-xs">
+                  {[
+                    { id: 'all', label: 'All Methods' },
+                    { id: 'pakistan_wallet', label: '🇵🇰 Pakistani Wallets (Easypaisa, JazzCash...)' },
+                    { id: 'pakistan_bank', label: '🇵🇰 Pakistani Banks (1Link / Raast)' },
+                    { id: 'international', label: '🌐 International Rails' },
+                  ].map((cat) => (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setProviderCategory(cat.id as any)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all shrink-0 cursor-pointer ${
+                        providerCategory === cat.id
+                          ? 'bg-black text-white shadow-xs'
+                          : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+                      }`}
+                    >
+                      {cat.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Provider Search */}
+                <div className="relative mb-2">
+                  <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-2.5" />
+                  <input
+                    type="text"
+                    placeholder="Search method (e.g. Easypaisa, JazzCash, SadaPay, Meezan, HBL)..."
+                    value={providerSearch}
+                    onChange={(e) => setProviderSearch(e.target.value)}
+                    className="w-full pl-9 pr-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs text-black placeholder-zinc-400 focus:outline-none focus:border-black"
+                  />
+                  {providerSearch && (
+                    <button
+                      type="button"
+                      onClick={() => setProviderSearch('')}
+                      className="absolute right-2.5 top-2 text-zinc-400 hover:text-black text-xs cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto p-1 border border-zinc-200 rounded-2xl bg-zinc-50/60">
+                  {filteredProviders.length === 0 ? (
+                    <div className="col-span-1 sm:col-span-2 py-6 text-center text-xs text-zinc-400">
+                      No payment method matches "{providerSearch}".
+                    </div>
+                  ) : (
+                    filteredProviders.map((p) => {
+                      const isSelected = selectedProviderId === p.id;
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          onClick={() => setSelectedProviderId(p.id)}
+                          className={`p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-1.5 ${
+                            isSelected
+                              ? 'bg-black text-white border-black shadow-md ring-2 ring-black/10'
+                              : 'bg-white border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:border-zinc-300'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span
+                                className={`w-7 h-7 rounded-xl text-[10px] font-black flex items-center justify-center font-mono ${
+                                  isSelected
+                                    ? 'bg-white text-black'
+                                    : p.category === 'pakistan_wallet'
+                                    ? 'bg-emerald-100 text-emerald-900 border border-emerald-200'
+                                    : 'bg-zinc-100 text-zinc-900 border border-zinc-200'
+                                }`}
+                              >
+                                {p.logoText}
+                              </span>
+                              <div>
+                                <span className="text-xs font-bold flex items-center gap-1">
+                                  {p.name}
+                                  {p.flag && <span className="text-sm">{p.flag}</span>}
+                                </span>
+                              </div>
+                            </div>
+                            <span
+                              className={`text-[9px] px-1.5 py-0.5 rounded font-mono uppercase font-bold shrink-0 ${
+                                isSelected
+                                  ? 'bg-zinc-800 text-white border border-zinc-700'
+                                  : p.category === 'pakistan_wallet'
+                                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                                  : 'bg-zinc-100 text-zinc-800 border border-zinc-300'
+                              }`}
+                            >
+                              {p.badge}
+                            </span>
+                          </div>
+                          <p
+                            className={`text-[10px] leading-tight line-clamp-1 ${
+                              isSelected ? 'text-zinc-300' : 'text-zinc-500'
+                            }`}
+                          >
+                            {p.description}
+                          </p>
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+
+              {/* 2. Destination Country & Worldwide Payment Status */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-bold text-black uppercase tracking-wider flex items-center gap-2">
+                    <span>2. Destination Country</span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-black text-white font-bold">
+                      All Countries Available
+                    </span>
+                  </label>
+                  <span className="text-[11px] text-zinc-500 font-medium">
+                    {AVAILABLE_COUNTRIES.length} Global Corridors
+                  </span>
+                </div>
+
+                {/* Region Filter Buttons */}
+                <div className="flex gap-1.5 overflow-x-auto pb-1.5 mb-2 text-xs">
+                  {['All', 'Asia', 'Middle East', 'Americas', 'Europe', 'Oceania', 'Africa'].map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => setSelectedRegion(r)}
+                      className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all shrink-0 cursor-pointer ${
+                        selectedRegion === r
+                          ? 'bg-black text-white shadow-xs'
+                          : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+                      }`}
+                    >
+                      {r === 'Asia' ? 'Asia (incl. Pakistan 🇵🇰)' : r}
+                    </button>
+                  ))}
                 </div>
 
                 {/* Country Search Bar */}
@@ -595,7 +1080,7 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
                   <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-2.5" />
                   <input
                     type="text"
-                    placeholder="Search corridor (Pakistan)..."
+                    placeholder="Search any country (e.g. Pakistan, United States, United Kingdom, UAE)..."
                     value={countrySearch}
                     onChange={(e) => setCountrySearch(e.target.value)}
                     className="w-full pl-9 pr-3 py-1.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs text-black placeholder-zinc-400 focus:outline-none focus:border-black"
@@ -611,11 +1096,11 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
                   )}
                 </div>
 
-                {/* Country Pills Grid (Strictly 1 Country: Pakistan) */}
-                <div className="grid grid-cols-1 gap-3 max-h-48 overflow-y-auto p-1.5 border border-zinc-200 rounded-2xl bg-zinc-50/70">
+                {/* Country Pills Grid (All Countries Available) */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-52 overflow-y-auto p-1.5 border border-zinc-200 rounded-2xl bg-zinc-50/70">
                   {filteredAvailable.length === 0 ? (
-                    <div className="py-4 text-center text-xs text-zinc-400">
-                      No country matches your search within the configured corridor.
+                    <div className="col-span-2 sm:col-span-3 py-6 text-center text-xs text-zinc-400">
+                      No country matches "{countrySearch}". Try searching another name or currency.
                     </div>
                   ) : (
                     filteredAvailable.map((c) => {
@@ -625,15 +1110,15 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
                           key={c.code}
                           type="button"
                           onClick={() => setSelectedCountryCode(c.code)}
-                          className={`p-3.5 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center gap-1.5 ${
+                          className={`p-2.5 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center gap-1 ${
                             isSelected
                               ? 'bg-black text-white border-black font-bold shadow-md ring-2 ring-black/20'
                               : 'bg-white border-zinc-200 text-zinc-800 hover:border-zinc-400 hover:bg-zinc-50'
                           }`}
                         >
-                          <span className="text-3xl">{c.flag}</span>
+                          <span className="text-2xl">{c.flag}</span>
                           <span className="text-xs truncate max-w-full font-semibold">{c.name}</span>
-                          <div className="flex items-center gap-1.5">
+                          <div className="flex items-center gap-1">
                             <span
                               className={`text-[10px] font-mono font-bold ${
                                 isSelected ? 'text-zinc-200' : 'text-zinc-500'
@@ -642,7 +1127,7 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
                               {c.currency}
                             </span>
                             <span
-                              className={`text-[8px] px-1.5 py-0.5 rounded font-mono ${
+                              className={`text-[8px] px-1 py-0.2 rounded font-mono ${
                                 isSelected ? 'bg-white/20 text-white' : 'bg-emerald-50 text-emerald-700'
                               }`}
                             >
@@ -655,24 +1140,24 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
                   )}
                 </div>
 
-                {/* Selected Corridor Info Banner */}
+                {/* Selected Country Info Banner */}
                 <div className="mt-2.5 p-3 rounded-2xl bg-zinc-100 border border-zinc-200 text-xs flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2.5">
                     <span className="text-xl">{currentCountryObj.flag}</span>
                     <div>
                       <div className="font-bold text-black text-[11px] flex items-center gap-1.5">
-                        <span>Selected Corridor: {currentCountryObj.name}</span>
+                        <span>Selected Country: {currentCountryObj.name}</span>
                         <span className="text-[9px] px-1.5 py-0.5 rounded bg-black text-white font-mono font-bold">
                           {currentCountryObj.currency}
                         </span>
                       </div>
                       <p className="text-[10px] text-zinc-500">
-                        Configured corridor (Pakistan)
+                        {currentCountryObj.region} • Global Settlement Corridor Available
                       </p>
                     </div>
                   </div>
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold shrink-0">
-                    Compliant Route
+                    Payment Available
                   </span>
                 </div>
               </div>
@@ -1064,155 +1549,130 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
             </div>
           )}
 
-          {/* STEP 4: SUCCESS RECEIPT */}
+          {/* STEP 4: PENDING TRANSACTION VIEW (No screenshot, shows pending transaction & your payment will be sent shortly) */}
           {step === 'success' && completedTx && (
-            <div className="space-y-5 py-1">
-              <div
-                id="transfer-receipt-screenshot-card"
-                className="relative rounded-3xl bg-zinc-50 border-2 border-zinc-200 p-5 sm:p-6 shadow-xl text-left overflow-hidden text-black"
-              >
-                {/* Simulated Notch */}
-                <div className="flex items-center justify-between pb-4 border-b border-zinc-200 text-[11px] font-mono text-zinc-500">
-                  <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-black">09:41</span>
-                    <span>•</span>
-                    <span className="text-black font-semibold">Live Settlement</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="px-1.5 py-0.5 rounded bg-zinc-200 text-[10px] text-black font-bold">
-                      5G
-                    </span>
-                    <span>100% 🔋</span>
-                  </div>
-                </div>
-
-                {/* Voucher Header */}
-                <div className="pt-4 pb-3 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-xl bg-black flex items-center justify-center text-white font-black text-sm">
-                      N
-                    </div>
-                    <div>
-                      <h4 className="font-black text-sm text-black tracking-wide">NEXORA</h4>
-                      <span className="text-[10px] text-zinc-500 uppercase tracking-widest block font-bold">
-                        Official Payment Voucher
-                      </span>
-                    </div>
-                  </div>
-                  <div className="px-2.5 py-1 rounded-full bg-zinc-200 border border-zinc-300 text-black text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3 text-black" /> Completed
-                  </div>
-                </div>
-
-                {/* Amount */}
-                <div className="text-center py-4 space-y-1">
-                  <div className="w-14 h-14 rounded-full bg-black flex items-center justify-center text-white mx-auto shadow-md">
-                    <CheckCircle2 className="w-8 h-8 text-white" />
-                  </div>
-                  <span className="text-xs font-bold text-zinc-600 uppercase tracking-wider block pt-2">
-                    Payment Successfully Sent!
-                  </span>
-                  <div className="text-3xl sm:text-4xl font-black text-black font-mono tracking-tight">
-                    ${completedTx.amount.toFixed(2)}{' '}
-                    <span className="text-base font-bold text-zinc-500">USD</span>
-                  </div>
-                </div>
-
-                {/* Details */}
-                <div className="border-t border-dashed border-zinc-300 my-2 pt-3 space-y-2 text-xs">
-                  <div className="flex justify-between items-center py-1">
-                    <span className="text-zinc-500">Transaction ID:</span>
-                    <button
-                      type="button"
-                      onClick={handleCopyRef}
-                      className="flex items-center gap-1 font-mono font-bold text-black hover:underline cursor-pointer bg-white px-2 py-0.5 rounded border border-zinc-200"
-                    >
-                      {completedTx.referenceId}
-                      {copiedRef ? <Check className="w-3 h-3 text-black" /> : <Copy className="w-3 h-3" />}
-                    </button>
-                  </div>
-
-                  <div className="flex justify-between items-center py-1">
-                    <span className="text-zinc-500">Beneficiary Name:</span>
-                    <span className="font-bold text-black text-sm">{recipientName}</span>
-                  </div>
-
-                  <div className="flex justify-between items-center py-1">
-                    <span className="text-zinc-500">Payment Provider:</span>
-                    <span className="font-bold text-black">
-                      {activeProvider.name} ({activeProvider.badge})
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between items-center py-1">
-                    <span className="text-zinc-500">Account / Handle:</span>
-                    <span className="font-mono font-bold text-black">{recipientAccount}</span>
-                  </div>
-
-                  <div className="flex justify-between items-center py-1">
-                    <span className="text-zinc-500">Destination:</span>
-                    <span className="font-bold text-black">
-                      {currentCountryObj.flag} {currentCountryObj.name}
-                    </span>
-                  </div>
-
-                  <div className="flex justify-between items-center py-1">
-                    <span className="text-zinc-500">Transfer Fee:</span>
-                    <span className="font-bold text-black font-mono">$0.00 USD (Zero Fee)</span>
-                  </div>
-
-                  <div className="flex justify-between items-center py-2 bg-white px-3 rounded-xl border border-zinc-200 mt-2">
-                    <span className="text-zinc-600 font-medium">Remaining Total Balance:</span>
-                    <span className="font-mono font-black text-black text-sm">
-                      {formatMoney(usdWallet.balance, 'USD')}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mt-3 pt-3 border-t border-zinc-200 flex items-center justify-center gap-2 text-[10px] text-zinc-500 font-medium text-center">
-                  <ShieldCheck className="w-3.5 h-3.5 text-black shrink-0" />
-                  <span>Verified Transfer • Secured by Nexora Global Clearing Network</span>
+            <div className="space-y-6 py-2 text-center" id="transfer-pending-card">
+              {/* Glowing Amber / Yellow Pending Badge */}
+              <div className="relative w-20 h-20 mx-auto flex items-center justify-center">
+                <div className="absolute inset-0 rounded-full border-2 border-amber-400/40 border-t-amber-500 animate-spin"></div>
+                <div className="w-14 h-14 rounded-full bg-amber-500/20 border-2 border-amber-500 flex items-center justify-center text-amber-600 shadow-md">
+                  <Clock className="w-7 h-7 text-amber-600 animate-pulse" />
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="space-y-2.5">
-                <div className="flex flex-col sm:flex-row gap-2.5">
-                  <button
-                    type="button"
-                    onClick={handleDownloadScreenshot}
-                    id="download-screenshot-btn"
-                    className="flex-1 py-3 px-4 rounded-xl bg-black hover:bg-zinc-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <Download className="w-4 h-4" />
-                    <span>Download Screenshot (PNG)</span>
-                  </button>
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-xs font-bold uppercase tracking-wider">
+                  <Clock className="w-3.5 h-3.5 text-amber-700 animate-pulse" />
+                  <span>Pending Transaction</span>
+                </div>
 
+                <h2 className="text-2xl sm:text-3xl font-black text-black tracking-tight">
+                  Pending Transaction
+                </h2>
+
+                {/* PROMINENT REQUESTED BANNER */}
+                <div className="p-4 rounded-2xl bg-amber-50 border-2 border-amber-400/80 text-amber-950 max-w-lg mx-auto shadow-sm">
+                  <div className="text-base sm:text-lg font-black flex items-center justify-center gap-2">
+                    <span>⏳</span>
+                    <span>Your payment will be sent to you shortly</span>
+                  </div>
+                  <p className="text-xs text-amber-800 mt-1 font-medium">
+                    Your transfer of <strong>${completedTx.amount.toFixed(2)} USD</strong> to <strong>{recipientName}</strong> ({currentCountryObj.flag} {currentCountryObj.name}) has been queued. Direct settlement is in progress and your funds will be sent to you shortly.
+                  </p>
+                </div>
+              </div>
+
+              {/* Itemized Pending Transaction Details */}
+              <div className="p-5 rounded-2xl bg-zinc-50 border border-zinc-200 text-left text-xs space-y-2.5 max-w-lg mx-auto font-mono text-zinc-900">
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
+                  <span className="text-zinc-500 font-sans">Transaction Reference:</span>
                   <button
                     type="button"
-                    onClick={handleCopyFullReceipt}
-                    id="copy-receipt-btn"
-                    className="flex-1 py-3 px-4 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-black font-bold text-xs border border-zinc-200 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    onClick={handleCopyRef}
+                    className="flex items-center gap-1 font-bold text-black hover:underline cursor-pointer bg-white px-2 py-0.5 rounded border border-zinc-200 text-xs"
                   >
-                    {copiedReceipt ? (
-                      <>
-                        <Check className="w-4 h-4 text-black" />
-                        <span>Receipt Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Share2 className="w-4 h-4 text-black" />
-                        <span>Copy Receipt Text</span>
-                      </>
-                    )}
+                    {completedTx.referenceId}
+                    {copiedRef ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
                   </button>
                 </div>
+
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
+                  <span className="text-zinc-500 font-sans">Transaction Status:</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold border border-amber-300 text-[11px] flex items-center gap-1">
+                    <Clock className="w-3 h-3 text-amber-700 animate-spin" />
+                    <span>Pending • In Queue</span>
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
+                  <span className="text-zinc-500 font-sans">Amount Deducted:</span>
+                  <span className="font-extrabold text-black text-sm">
+                    ${completedTx.amount.toFixed(2)} USD
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
+                  <span className="text-zinc-500 font-sans">Beneficiary Name:</span>
+                  <span className="font-bold text-black font-sans">{recipientName}</span>
+                </div>
+
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
+                  <span className="text-zinc-500 font-sans">Destination Country:</span>
+                  <span className="font-bold text-black font-sans flex items-center gap-1.5">
+                    <span>{currentCountryObj.flag}</span>
+                    <span>{currentCountryObj.name}</span>
+                    <span className="text-[10px] font-mono text-zinc-500">({currentCountryObj.currency})</span>
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
+                  <span className="text-zinc-500 font-sans">Payment Network / Rail:</span>
+                  <span className="font-bold text-black font-sans">{activeProvider.name}</span>
+                </div>
+
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
+                  <span className="text-zinc-500 font-sans">Account / ID:</span>
+                  <span className="font-bold text-black">{recipientAccount}</span>
+                </div>
+
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-200">
+                  <span className="text-zinc-500 font-sans">Transfer Fee:</span>
+                  <span className="font-bold text-emerald-700 font-sans">$0.00 USD (Zero Fee)</span>
+                </div>
+
+                <div className="flex justify-between items-center pt-1 bg-white px-3 py-2 rounded-xl border border-zinc-200">
+                  <span className="text-zinc-600 font-sans font-medium">Remaining Total Balance:</span>
+                  <span className="font-black text-black text-sm">
+                    {formatMoney(usdWallet.balance, 'USD')}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons (No Screenshot Download) */}
+              <div className="max-w-lg mx-auto space-y-2.5">
+                <button
+                  type="button"
+                  onClick={handleCopyFullReceipt}
+                  className="w-full py-3 px-4 rounded-xl bg-zinc-100 hover:bg-zinc-200 text-black font-bold text-xs border border-zinc-200 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  {copiedReceipt ? (
+                    <>
+                      <Check className="w-4 h-4 text-emerald-600" />
+                      <span>Transaction Record Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-4 h-4 text-black" />
+                      <span>Copy Transaction Details</span>
+                    </>
+                  )}
+                </button>
 
                 <button
                   type="button"
                   onClick={handleCloseAndReset}
-                  id="done-receipt-btn"
-                  className="w-full py-3 rounded-xl bg-zinc-50 hover:bg-zinc-100 text-black font-bold text-xs border border-zinc-200 transition-colors cursor-pointer text-center"
+                  id="done-pending-btn"
+                  className="w-full py-3.5 rounded-xl bg-black hover:bg-zinc-800 text-white font-bold text-xs shadow-md transition-colors cursor-pointer text-center"
                 >
                   Done & Return to Dashboard
                 </button>

@@ -69,7 +69,7 @@ export const TransfersScreen: React.FC<TransfersScreenProps> = ({
             Payments & Transfers
           </h1>
           <p className="text-xs text-zinc-500 mt-0.5">
-            Instant transfers via Revolut, Payoneer, PayPal, Wise, and SWIFT wires
+            Instant transfers via Pakistani Banks & Wallets (Easypaisa, JazzCash, Meezan, HBL), Revolut, Payoneer, PayPal & Wise
           </p>
         </div>
 
@@ -82,7 +82,7 @@ export const TransfersScreen: React.FC<TransfersScreenProps> = ({
         </button>
       </div>
 
-      {/* 1 Configured Corridor Notice */}
+      {/* Global Payment Corridors Notice */}
       <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-start sm:items-center gap-3">
           <div className="w-8 h-8 rounded-xl bg-black text-white flex items-center justify-center shrink-0">
@@ -90,13 +90,13 @@ export const TransfersScreen: React.FC<TransfersScreenProps> = ({
           </div>
           <div>
             <div className="font-bold text-black flex items-center gap-2">
-              Cross-Border Monitored Corridors
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-black text-white font-mono font-bold">
-                1 Active Corridor
+              Global Payment Network
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono font-bold">
+                All Countries Enabled
               </span>
             </div>
             <p className="text-zinc-600 text-[11px] mt-0.5">
-              Available corridor: <strong>Pakistan 🇵🇰</strong> (1 monitored jurisdiction).
+              Cross-border payments available worldwide for all countries, including <strong>Pakistan 🇵🇰</strong> (Easypaisa, JazzCash, Raast & all Pakistani banks supported).
             </p>
           </div>
         </div>
@@ -104,7 +104,7 @@ export const TransfersScreen: React.FC<TransfersScreenProps> = ({
           onClick={onOpenSend}
           className="shrink-0 text-black hover:underline font-bold text-[11px] flex items-center gap-1 cursor-pointer"
         >
-          Open Transfer Portal <ChevronRight className="w-3.5 h-3.5" />
+          Send Worldwide <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>
 

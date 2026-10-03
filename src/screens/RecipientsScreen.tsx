@@ -64,13 +64,7 @@ export const RecipientsScreen: React.FC<RecipientsScreenProps> = ({
     }
   };
 
-  const handleInitiateSend = (recipientName: string, recipientCountry: string, recipientCurrency: string) => {
-    if (isCountryRestricted(recipientCountry)) {
-      setRestrictionError(
-        `Corridor Restricted: Payments to ${recipientCountry} are currently unavailable under cross-border banking restrictions. Transfers are restricted to the configured corridor: Pakistan.`
-      );
-      return;
-    }
+  const handleInitiateSend = (recipientName: string, _recipientCountry: string, recipientCurrency: string) => {
     setRestrictionError(null);
     onOpenSendToRecipient(recipientName, recipientCurrency);
   };
