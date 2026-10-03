@@ -40,10 +40,10 @@ export const INITIAL_APP_SETTINGS: AppSettings = {
   hapticFeedback: true,
 };
 
-// Multi-currency Wallets: $3,016.91 USD (Rs 840,057.60 PKR equivalent with +$436 USD deposit)
+// Multi-currency Wallets: $5,999.91 USD (Rs 1,670,674.94 PKR equivalent with +$2,983 USD deposit by eSports web development PayPal 777)
 export const INITIAL_WALLETS: Wallet[] = [
-  { id: 'w_usd', currencyCode: 'USD', balance: 3016.91, isFavorite: true, isActive: true, createdAt: '2026-07-07' },
-  { id: 'w_pkr', currencyCode: 'PKR', balance: 840057.60, isFavorite: true, isActive: true, createdAt: '2026-07-07' },
+  { id: 'w_usd', currencyCode: 'USD', balance: 5999.91, isFavorite: true, isActive: true, createdAt: '2026-07-07' },
+  { id: 'w_pkr', currencyCode: 'PKR', balance: 1670674.94, isFavorite: true, isActive: true, createdAt: '2026-07-07' },
   { id: 'w_eur', currencyCode: 'EUR', balance: 0.00, isFavorite: false, isActive: true, createdAt: '2026-07-07' },
   { id: 'w_gbp', currencyCode: 'GBP', balance: 0.00, isFavorite: false, isActive: true, createdAt: '2026-07-07' },
   { id: 'w_aed', currencyCode: 'AED', balance: 0.00, isFavorite: false, isActive: true, createdAt: '2026-07-07' },
@@ -54,6 +54,22 @@ export const INITIAL_WALLETS: Wallet[] = [
 ];
 
 export const INITIAL_TRANSACTIONS: Transaction[] = [
+  {
+    id: 'tx_esports_web_paypal_2983',
+    referenceId: 'PAYPAL-20261003-7772983',
+    title: 'Inward Payment Received',
+    recipientMerchant: 'eSports web development (PayPal 777)',
+    category: 'Transfer',
+    amount: 2983.00,
+    currency: 'USD',
+    type: 'income',
+    status: 'completed',
+    timestamp: '2026-10-03T10:30:00Z',
+    fee: 0.00,
+    note: 'Inward payment received from eSports web development via PayPal 777',
+    counterpartyAccount: 'PayPal 777',
+    recipientCountry: 'United States',
+  },
   {
     id: 'tx_esports_web_paypal_436',
     referenceId: 'PAYPAL-20260905-777436',
@@ -233,6 +249,14 @@ export const INITIAL_SUBSCRIPTIONS: Subscription[] = [];
 
 export const INITIAL_NOTIFICATIONS: AppNotification[] = [
   {
+    id: 'notif_esports_paypal_2983',
+    title: 'Inward Payment: +$2,983.00 USD',
+    description: '$2,983.00 USD received from eSports web development via PayPal 777.',
+    timestamp: 'Just now',
+    type: 'payment',
+    isRead: false,
+  },
+  {
     id: 'notif_esports_paypal_436',
     title: 'Inward Payment: +$436.00 USD',
     description: '$436.00 USD received from eSports web development via PayPal 777.',
@@ -360,7 +384,7 @@ export const FINANCIAL_INSIGHTS = [
   {
     id: 'ins_1',
     title: 'Inward Payments & Transfers Received',
-    text: '+$436.00 USD received from eSports web development (PayPal 777) & Rs 448,000.00 from Umair Hayat (NBP). Current available: $3,016.91 (Rs 840,058 PKR).',
+    text: '+$2,983.00 USD received from eSports web development (PayPal 777). Current available: $5,999.91 USD (Rs 1,670,675 PKR).',
     type: 'positive',
     icon: 'Sparkles',
   },
