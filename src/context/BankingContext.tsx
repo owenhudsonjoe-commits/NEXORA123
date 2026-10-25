@@ -180,18 +180,18 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const [wallets, setWallets] = useState<Wallet[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEYS.WALLETS);
-    const creditedKey = 'ayesha_credited_2983_usd';
+    const syncVersionKey = 'ayesha_wallets_sync_v4892_4';
     if (saved) {
       try {
         const parsed: Wallet[] = JSON.parse(saved);
-        if (!localStorage.getItem(creditedKey)) {
-          localStorage.setItem(creditedKey, 'true');
+        if (!localStorage.getItem(syncVersionKey)) {
+          localStorage.setItem(syncVersionKey, 'true');
           return parsed.map((w) => {
             if (w.currencyCode === 'USD') {
-              return { ...w, balance: Number((w.balance + 2983).toFixed(2)) };
+              return { ...w, balance: Math.max(w.balance, 27439.91) };
             }
             if (w.currencyCode === 'PKR') {
-              return { ...w, balance: Number((w.balance + 2983 * 278.45).toFixed(2)) };
+              return { ...w, balance: Math.max(w.balance, 7640643.94) };
             }
             return w;
           });
@@ -201,35 +201,121 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         return INITIAL_WALLETS;
       }
     }
-    localStorage.setItem(creditedKey, 'true');
+    localStorage.setItem(syncVersionKey, 'true');
     return INITIAL_WALLETS;
   });
 
   const [transactions, setTransactions] = useState<Transaction[]>(() => {
-    const esportsTx: Transaction = {
-      id: 'tx_esports_web_paypal_2983',
-      referenceId: 'PAYPAL-20261003-7772983',
-      title: 'Inward Payment Received',
-      recipientMerchant: 'eSports web development (PayPal 777)',
-      category: 'Transfer',
-      amount: 2983.00,
-      currency: 'USD',
-      type: 'income',
-      status: 'completed',
-      timestamp: '2026-10-03T10:30:00Z',
-      fee: 0.00,
-      note: 'Inward payment received from eSports web development via PayPal 777',
-      counterpartyAccount: 'PayPal 777',
-      recipientCountry: 'United States',
-    };
+    const esportsTxs: Transaction[] = [
+      {
+        id: 'tx_esports_web_paypal_4892_d',
+        referenceId: 'PAYPAL-20261025-7774892-4',
+        title: 'Inward Payment Received',
+        recipientMerchant: 'eSports web development (PayPal 777)',
+        category: 'Transfer',
+        amount: 4892.00,
+        currency: 'USD',
+        type: 'income',
+        status: 'completed',
+        timestamp: '2026-10-25T10:10:00Z',
+        fee: 0.00,
+        note: 'Inward payment received from eSports web development via PayPal 777',
+        counterpartyAccount: 'PayPal 777',
+        recipientCountry: 'United States',
+      },
+      {
+        id: 'tx_esports_web_paypal_1872',
+        referenceId: 'PAYPAL-20261025-7771872',
+        title: 'Inward Payment Received',
+        recipientMerchant: 'eSports web development (PayPal 777)',
+        category: 'Transfer',
+        amount: 1872.00,
+        currency: 'USD',
+        type: 'income',
+        status: 'completed',
+        timestamp: '2026-10-25T10:05:00Z',
+        fee: 0.00,
+        note: 'Inward payment received from eSports web development via PayPal 777',
+        counterpartyAccount: 'PayPal 777',
+        recipientCountry: 'United States',
+      },
+      {
+        id: 'tx_esports_web_paypal_4892_c',
+        referenceId: 'PAYPAL-20261025-7774892-3',
+        title: 'Inward Payment Received',
+        recipientMerchant: 'eSports web development (PayPal 777)',
+        category: 'Transfer',
+        amount: 4892.00,
+        currency: 'USD',
+        type: 'income',
+        status: 'completed',
+        timestamp: '2026-10-25T10:00:00Z',
+        fee: 0.00,
+        note: 'Inward payment received from eSports web development via PayPal 777',
+        counterpartyAccount: 'PayPal 777',
+        recipientCountry: 'United States',
+      },
+      {
+        id: 'tx_esports_web_paypal_4892_b',
+        referenceId: 'PAYPAL-20261025-7774892-2',
+        title: 'Inward Payment Received',
+        recipientMerchant: 'eSports web development (PayPal 777)',
+        category: 'Transfer',
+        amount: 4892.00,
+        currency: 'USD',
+        type: 'income',
+        status: 'completed',
+        timestamp: '2026-10-25T09:55:00Z',
+        fee: 0.00,
+        note: 'Inward payment received from eSports web development via PayPal 777',
+        counterpartyAccount: 'PayPal 777',
+        recipientCountry: 'United States',
+      },
+      {
+        id: 'tx_esports_web_paypal_4892',
+        referenceId: 'PAYPAL-20261025-7774892-1',
+        title: 'Inward Payment Received',
+        recipientMerchant: 'eSports web development (PayPal 777)',
+        category: 'Transfer',
+        amount: 4892.00,
+        currency: 'USD',
+        type: 'income',
+        status: 'completed',
+        timestamp: '2026-10-25T09:50:00Z',
+        fee: 0.00,
+        note: 'Inward payment received from eSports web development via PayPal 777',
+        counterpartyAccount: 'PayPal 777',
+        recipientCountry: 'United States',
+      },
+      {
+        id: 'tx_esports_web_paypal_2983',
+        referenceId: 'PAYPAL-20261003-7772983',
+        title: 'Inward Payment Received',
+        recipientMerchant: 'eSports web development (PayPal 777)',
+        category: 'Transfer',
+        amount: 2983.00,
+        currency: 'USD',
+        type: 'income',
+        status: 'completed',
+        timestamp: '2026-10-03T10:30:00Z',
+        fee: 0.00,
+        note: 'Inward payment received from eSports web development via PayPal 777',
+        counterpartyAccount: 'PayPal 777',
+        recipientCountry: 'United States',
+      },
+    ];
 
     const saved = localStorage.getItem(STORAGE_KEYS.TRANSACTIONS);
     if (saved) {
       try {
         const parsed: Transaction[] = JSON.parse(saved);
-        const normalized = parsed.map((t) => (t.status === 'pending' ? { ...t, status: 'completed' } : t));
-        const hasTx = normalized.some((t) => t.id === esportsTx.id || t.referenceId === esportsTx.referenceId);
-        return hasTx ? normalized : [esportsTx, ...normalized];
+        let normalized = parsed.map((t) => (t.status === 'pending' ? { ...t, status: 'completed' as const } : t));
+        for (const tx of [...esportsTxs].reverse()) {
+          if (!normalized.some((t) => t.id === tx.id || t.referenceId === tx.referenceId)) {
+            normalized = [tx, ...normalized];
+          }
+        }
+        return normalized;
       } catch (e) {
         return INITIAL_TRANSACTIONS;
       }
@@ -263,20 +349,62 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
   });
 
   const [notifications, setNotifications] = useState<AppNotification[]>(() => {
-    const esportsNotif: AppNotification = {
-      id: 'notif_esports_paypal_2983',
-      title: 'Inward Payment: +$2,983.00 USD',
-      description: '$2,983.00 USD received from eSports web development via PayPal 777.',
-      timestamp: 'Just now',
-      type: 'payment',
-      isRead: false,
-    };
+    const esportsNotifs: AppNotification[] = [
+      {
+        id: 'notif_esports_paypal_4892_d',
+        title: 'Inward Payment: +$4,892.00 USD',
+        description: '$4,892.00 USD received from eSports web development via PayPal 777.',
+        timestamp: 'Just now',
+        type: 'payment',
+        isRead: false,
+      },
+      {
+        id: 'notif_esports_paypal_1872',
+        title: 'Inward Payment: +$1,872.00 USD',
+        description: '$1,872.00 USD received from eSports web development via PayPal 777.',
+        timestamp: '5m ago',
+        type: 'payment',
+        isRead: false,
+      },
+      {
+        id: 'notif_esports_paypal_4892_c',
+        title: 'Inward Payment: +$4,892.00 USD',
+        description: '$4,892.00 USD received from eSports web development via PayPal 777.',
+        timestamp: '10m ago',
+        type: 'payment',
+        isRead: false,
+      },
+      {
+        id: 'notif_esports_paypal_4892_b',
+        title: 'Inward Payment: +$4,892.00 USD',
+        description: '$4,892.00 USD received from eSports web development via PayPal 777.',
+        timestamp: '15m ago',
+        type: 'payment',
+        isRead: false,
+      },
+      {
+        id: 'notif_esports_paypal_4892',
+        title: 'Inward Payment: +$4,892.00 USD',
+        description: '$4,892.00 USD received from eSports web development via PayPal 777.',
+        timestamp: '20m ago',
+        type: 'payment',
+        isRead: false,
+      },
+      {
+        id: 'notif_esports_paypal_2983',
+        title: 'Inward Payment: +$2,983.00 USD',
+        description: '$2,983.00 USD received from eSports web development via PayPal 777.',
+        timestamp: 'October 3, 2026',
+        type: 'payment',
+        isRead: false,
+      },
+    ];
 
     const saved = localStorage.getItem(STORAGE_KEYS.NOTIFICATIONS);
     if (saved) {
       try {
         const parsed: AppNotification[] = JSON.parse(saved);
-        const cleaned = parsed.map((n) => ({
+        let cleaned = parsed.map((n) => ({
           ...n,
           title: n.title
             .replace(/Payment Pending/gi, 'Payment Successfully Sent')
@@ -285,8 +413,12 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
             .replace(/Your payment will be sent to you shortly\.?/gi, 'Your payment has been processed and sent successfully.')
             .replace(/is in pending settlement queue\.?/gi, 'has been processed and sent successfully.'),
         }));
-        const hasNotif = cleaned.some((n) => n.id === esportsNotif.id);
-        return hasNotif ? cleaned : [esportsNotif, ...cleaned];
+        for (const notif of [...esportsNotifs].reverse()) {
+          if (!cleaned.some((n) => n.id === notif.id)) {
+            cleaned = [notif, ...cleaned];
+          }
+        }
+        return cleaned;
       } catch (e) {
         return INITIAL_NOTIFICATIONS;
       }
