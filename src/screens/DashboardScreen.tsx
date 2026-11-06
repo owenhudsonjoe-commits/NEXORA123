@@ -39,6 +39,7 @@ import { GLOBAL_CURRENCIES } from '../data/currencies';
 import { BALANCE_TIMEFRAME_DATA } from '../data/mockData';
 import { Transaction } from '../types';
 import { RESTRICTED_COUNTRIES } from '../data/restrictedCountries';
+import { MAINTENANCE_CONFIG } from '../data/maintenance';
 
 interface DashboardScreenProps {
   onSelectTab: (tab: string) => void;
@@ -46,6 +47,7 @@ interface DashboardScreenProps {
   onOpenExchange: () => void;
   onOpenAddFunds: () => void;
   onSelectTransaction: (tx: Transaction) => void;
+  onOpenLinkMeezan?: () => void;
 }
 
 export const DashboardScreen: React.FC<DashboardScreenProps> = ({
@@ -54,6 +56,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
   onOpenExchange,
   onOpenAddFunds,
   onSelectTransaction,
+  onOpenLinkMeezan,
 }) => {
   const {
     totalBalanceUSD,
@@ -71,6 +74,8 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
     appSettings,
     updateSettings,
     t,
+    linkedMeezanIban,
+    isMeezanLinked,
   } = useBanking();
 
   // Local state for displaying in USD or other currencies on the fly
@@ -138,6 +143,32 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         </div>
       </div>
 
+      {/* Maintenance Mode Banner */}
+      {MAINTENANCE_CONFIG.isActive && (
+        <div className="p-4 sm:p-5 rounded-2xl bg-amber-50 border-2 border-amber-300 text-amber-950 flex items-start gap-3.5 shadow-xs">
+          <div className="w-10 h-10 rounded-xl bg-amber-200 border border-amber-300 flex items-center justify-center shrink-0 text-amber-900 font-bold text-lg">
+            ⚠️
+          </div>
+          <div className="flex-1 space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-black text-xs uppercase tracking-wider text-amber-900">
+                System Maintaining Mode
+              </span>
+              <span className="px-2 py-0.5 rounded-full bg-amber-200 text-amber-950 text-[10px] font-bold">
+                Till 7 Nov, Sunday
+              </span>
+            </div>
+            <p className="text-sm font-black text-amber-950 leading-snug whitespace-pre-line">
+              all the payment unavaliable till date 7 Nov , sunday
+the app is in maintaing mode
+            </p>
+            <p className="text-xs text-amber-800">
+              Outward remittance, cross-border payouts, and wallet transfers are temporarily held while scheduled core banking maintenance is performed until Sunday, 7 Nov.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Global Payment Network Banner */}
       <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-start sm:items-center gap-3">
@@ -162,6 +193,47 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({
         >
           Send Worldwide <ChevronRight className="w-3.5 h-3.5" />
         </button>
+      </div>
+
+      {/* Meezan Bank Affiliation Card */}
+      <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-white border-2 border-emerald-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
+        <div className="flex items-start sm:items-center gap-3.5">
+          <div className="w-11 h-11 rounded-xl bg-emerald-700 text-white flex items-center justify-center shrink-0 shadow-sm font-black text-sm">
+            MEZN
+          </div>
+          <div className="space-y-0.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-extrabold text-sm sm:text-base text-emerald-950">
+                Nexora is affiliated with Meezan Bank
+              </span>
+              <span className="px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900 text-[10px] font-bold uppercase tracking-wider">
+                Official Partner 🇵🇰
+              </span>
+              {isMeezanLinked && (
+                <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" />
+                  Connected
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-emerald-800">
+              {isMeezanLinked
+                ? `Direct clearing active for Meezan IBAN: ${linkedMeezanIban}`
+                : 'Connect your Meezan Bank Islamic account for zero-fee PKR settlements and instant cross-border transfers.'}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <button
+            onClick={onOpenLinkMeezan}
+            id="dash-link-meezan-btn"
+            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <Building2 className="w-4 h-4" />
+            <span>{isMeezanLinked ? 'Manage Meezan IBAN' : 'Link Meezan Bank'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Main Account Balance Metrics Grid */}

@@ -23,6 +23,7 @@ import { Logo } from '../common/Logo';
 import { useBanking } from '../../context/BankingContext';
 import { AVAILABLE_LANGUAGES } from '../../data/translations';
 import { GLOBAL_CURRENCIES } from '../../data/currencies';
+import { MAINTENANCE_CONFIG } from '../../data/maintenance';
 
 interface NavbarProps {
   currentTab: string;
@@ -31,6 +32,7 @@ interface NavbarProps {
   onOpenExchange: () => void;
   onOpenAddFunds: () => void;
   onOpenKYC: () => void;
+  onOpenLinkMeezan?: () => void;
   searchQuery: string;
   onSearchChange: (q: string) => void;
 }
@@ -42,6 +44,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenExchange,
   onOpenAddFunds,
   onOpenKYC,
+  onOpenLinkMeezan,
   searchQuery,
   onSearchChange,
 }) => {
@@ -57,6 +60,8 @@ export const Navbar: React.FC<NavbarProps> = ({
     formatMoney,
     totalBalanceUSD,
     t,
+    isMeezanLinked,
+    linkedMeezanIban,
   } = useBanking();
 
   const [showNotifications, setShowNotifications] = useState(false);
@@ -102,10 +107,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={onOpenSend}
             id="nav-quick-send-btn"
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-black hover:bg-zinc-800 text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-black hover:bg-zinc-800 text-white text-xs font-bold shadow-xs transition-all cursor-pointer relative"
           >
             <Send className="w-3.5 h-3.5" />
-            {t('send')}
+            <span>{t('send')}</span>
+            {MAINTENANCE_CONFIG.isActive && (
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" title="Payments in maintaining mode till 7 Nov, Sunday" />
+            )}
           </button>
           <button
             onClick={onOpenExchange}
@@ -123,6 +131,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             <PlusCircle className="w-3.5 h-3.5 text-zinc-700" />
             {t('addMoney')}
           </button>
+          {onOpenLinkMeezan && (
+            <button
+              onClick={onOpenLinkMeezan}
+              id="nav-quick-meezan-btn"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-950 border border-emerald-300 text-xs font-bold transition-all cursor-pointer shadow-xs"
+              title="Nexora is affiliated with Meezan Bank. Give your Meezan IBAN to connect."
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+              <span>{isMeezanLinked ? 'Meezan Linked' : 'Link Meezan Bank'}</span>
+            </button>
+          )}
         </div>
 
         {/* Right tools: Theme, Language, Notifications, Profile */}

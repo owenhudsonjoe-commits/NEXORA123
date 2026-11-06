@@ -15,7 +15,7 @@ export const DemoFooterBadge: React.FC<{ onOpenAuth?: () => void }> = () => {
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-black" />
           <span className="font-semibold text-black">
-            NEXORA Digital Banking Portal • SBP Raast Integrated 🇵🇰
+            NEXORA Digital Banking Portal • Affiliated with Meezan Bank • SBP Raast Integrated 🇵🇰
           </span>
           <span className="hidden sm:inline text-zinc-300">|</span>
           <span className="hidden sm:inline text-zinc-600 text-[11px]">

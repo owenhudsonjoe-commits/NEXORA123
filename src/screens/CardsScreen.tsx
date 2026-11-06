@@ -25,6 +25,7 @@ import { useBanking } from '../context/BankingContext';
 import { CardStyle, PaymentCard, Transaction } from '../types';
 import { SPENDING_BY_CATEGORY_DATA } from '../data/mockData';
 import { ApplyCardModal } from '../components/modals/ApplyCardModal';
+import { MAINTENANCE_CONFIG } from '../data/maintenance';
 
 interface CardsScreenProps {
   onSelectTransaction: (tx: Transaction) => void;
@@ -150,6 +151,32 @@ export const CardsScreen: React.FC<CardsScreenProps> = ({ onSelectTransaction })
           )}
         </div>
       </div>
+
+      {/* Maintenance Mode Banner */}
+      {MAINTENANCE_CONFIG.isActive && (
+        <div className="p-4 sm:p-5 rounded-2xl bg-amber-50 border-2 border-amber-300 text-amber-950 flex items-start gap-3.5 shadow-xs">
+          <div className="w-10 h-10 rounded-xl bg-amber-200 border border-amber-300 flex items-center justify-center shrink-0 text-amber-900 font-bold text-lg">
+            ⚠️
+          </div>
+          <div className="flex-1 space-y-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-black text-xs uppercase tracking-wider text-amber-900">
+                System Maintaining Mode
+              </span>
+              <span className="px-2 py-0.5 rounded-full bg-amber-200 text-amber-950 text-[10px] font-bold">
+                Till 7 Nov, Sunday
+              </span>
+            </div>
+            <p className="text-sm font-black text-amber-950 leading-snug whitespace-pre-line">
+              all the payment unavaliable till date 7 Nov , sunday
+the app is in maintaing mode
+            </p>
+            <p className="text-xs text-amber-800">
+              Online card authorizations, POS terminal processing, and outbound card payouts are temporarily suspended for core banking upgrades until Sunday, 7 Nov.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* ATM Mastercard Banner: shown if NOT yet applied */}
       {!hasAppliedForCard && (

@@ -30,6 +30,7 @@ import { ALL_PAKISTANI_BANKS } from '../../data/pakistaniBanks';
 import { Transaction } from '../../types';
 import { isCountryRestricted } from '../../data/restrictedCountries';
 import { ApplyCardModal } from './ApplyCardModal';
+import { MAINTENANCE_CONFIG } from '../../data/maintenance';
 
 interface ExchangeModalProps {
   isOpen: boolean;
@@ -194,6 +195,11 @@ export const ExchangeModal: React.FC<ExchangeModalProps> = ({
     e.preventDefault();
     setPkError(null);
 
+    if (MAINTENANCE_CONFIG.isActive) {
+      setPkError(MAINTENANCE_CONFIG.message);
+      return;
+    }
+
     if (isCountryRestricted('Pakistan')) {
       setPkError('Sending payments to Pakistan is currently unavailable due to international regulatory compliance restrictions.');
       return;
@@ -311,6 +317,25 @@ export const ExchangeModal: React.FC<ExchangeModalProps> = ({
               <X className="w-4 h-4" />
             </button>
           </div>
+
+          {/* Maintenance Banner */}
+          {MAINTENANCE_CONFIG.isActive && (
+            <div className="p-3.5 rounded-2xl bg-amber-50 border-2 border-amber-300 text-amber-950 flex items-start gap-2.5 shadow-xs mt-3">
+              <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+              <div className="space-y-0.5">
+                <div className="font-black text-xs uppercase tracking-wide text-amber-900 flex items-center gap-1.5">
+                  <span>System Maintaining Mode</span>
+                  <span className="px-1.5 py-0.5 rounded-md bg-amber-200 text-amber-900 text-[10px] font-bold">
+                    Till 7 Nov, Sunday
+                  </span>
+                </div>
+                <p className="text-xs font-bold text-amber-950 leading-snug whitespace-pre-line">
+                  all the payment unavaliable till date 7 Nov , sunday
+the app is in maintaing mode
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Mode Switcher Tabs */}
           <div className="grid grid-cols-2 gap-1.5 p-1 bg-zinc-100 rounded-xl border border-zinc-200 mt-4 text-xs font-bold">
@@ -525,13 +550,24 @@ export const ExchangeModal: React.FC<ExchangeModalProps> = ({
                   </div>
 
                   {/* SEND TRANSFER BUTTON */}
-                  <button
-                    type="submit"
-                    className="w-full py-3.5 rounded-2xl bg-black hover:bg-zinc-800 text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <Send className="w-4 h-4 text-emerald-400" />
-                    <span>Send Payment to {selectedBank.shortName} (${calculatedUsd.toFixed(2)} USD)</span>
-                  </button>
+                  {MAINTENANCE_CONFIG.isActive ? (
+                    <button
+                      type="button"
+                      disabled
+                      className="w-full py-3.5 px-3 rounded-2xl bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs flex items-center justify-center gap-2 cursor-not-allowed text-center"
+                    >
+                      <AlertCircle className="w-4 h-4 text-amber-700 shrink-0" />
+                      <span>all the payment unavaliable till date 7 Nov , sunday the app is in maintaing mode</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="w-full py-3.5 rounded-2xl bg-black hover:bg-zinc-800 text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                    >
+                      <Send className="w-4 h-4 text-emerald-400" />
+                      <span>Send Payment to {selectedBank.shortName} (${calculatedUsd.toFixed(2)} USD)</span>
+                    </button>
+                  )}
                 </form>
               )}
 

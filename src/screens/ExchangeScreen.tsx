@@ -43,6 +43,7 @@ import { ALL_PAKISTANI_BANKS, PakistaniBank } from '../data/pakistaniBanks';
 import { ALL_INTERNATIONAL_PROVIDERS, InternationalPaymentProvider } from '../data/internationalBanks';
 import { FX_HISTORICAL_DATA } from '../data/mockData';
 import { ApplyCardModal } from '../components/modals/ApplyCardModal';
+import { MAINTENANCE_CONFIG } from '../data/maintenance';
 
 interface ExchangeScreenProps {
   onOpenExchangeModalWithPair?: (from: string, to: string) => void;
@@ -289,6 +290,11 @@ export const ExchangeScreen: React.FC<ExchangeScreenProps> = ({
     e.preventDefault();
     setPkError(null);
 
+    if (MAINTENANCE_CONFIG.isActive) {
+      setPkError(MAINTENANCE_CONFIG.message);
+      return;
+    }
+
     if (calculatedUsdAmount <= 0) {
       setPkError('Please enter a valid transfer amount.');
       return;
@@ -322,6 +328,11 @@ export const ExchangeScreen: React.FC<ExchangeScreenProps> = ({
   const handleInitiateIntlTransfer = (e: React.FormEvent) => {
     e.preventDefault();
     setIntlError(null);
+
+    if (MAINTENANCE_CONFIG.isActive) {
+      setIntlError(MAINTENANCE_CONFIG.message);
+      return;
+    }
 
     if (calculatedIntlUsd <= 0) {
       setIntlError('Please enter a valid transfer amount.');
@@ -564,6 +575,28 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
           </div>
         </div>
       </div>
+
+      {/* Maintenance Mode Banner */}
+      {MAINTENANCE_CONFIG.isActive && (
+        <div className="p-4 sm:p-5 rounded-2xl bg-amber-50 border-2 border-amber-300 text-amber-950 flex items-start gap-3.5 shadow-xs">
+          <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <div className="font-black text-xs uppercase tracking-wide text-amber-900 flex items-center gap-2">
+              <span>System Maintaining Mode</span>
+              <span className="px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 text-[10px] font-bold">
+                Till 7 Nov, Sunday
+              </span>
+            </div>
+            <p className="text-sm font-black text-amber-950 leading-snug whitespace-pre-line">
+              all the payment unavaliable till date 7 Nov , sunday
+the app is in maintaing mode
+            </p>
+            <p className="text-xs text-amber-800">
+              International payouts, wallet transfers, and currency exchanges are temporarily suspended for core banking maintenance until Sunday, 7 Nov.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Main Mode Navigation Tabs */}
       <div className="flex border-b border-zinc-200 gap-2 overflow-x-auto">
@@ -945,16 +978,27 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
                     </div>
 
                     {/* SEND TRANSFER BUTTON */}
-                    <button
-                      type="submit"
-                      id="send-transfer-button"
-                      className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-extrabold text-sm shadow-xl shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <Send className="w-4 h-4" />
-                      <span>
-                        Send Transfer (${calculatedUsdAmount.toFixed(2)} USD to {selectedBank.shortName})
-                      </span>
-                    </button>
+                    {MAINTENANCE_CONFIG.isActive ? (
+                      <button
+                        type="button"
+                        disabled
+                        className="w-full py-4 px-4 rounded-2xl bg-amber-100 border border-amber-300 text-amber-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-not-allowed shadow-none"
+                      >
+                        <AlertCircle className="w-4 h-4 text-amber-700 shrink-0" />
+                        <span>all the payment unavaliable till date 7 Nov , sunday the app is in maintaing mode</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="submit"
+                        id="send-transfer-button"
+                        className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-extrabold text-sm shadow-xl shadow-emerald-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <Send className="w-4 h-4" />
+                        <span>
+                          Send Transfer (${calculatedUsdAmount.toFixed(2)} USD to {selectedBank.shortName})
+                        </span>
+                      </button>
+                    )}
                   </form>
                 )}
               </div>
@@ -1555,14 +1599,25 @@ Network: 1Link PRISM / State Bank of Pakistan Raast Direct`;
                     </div>
 
                     {/* Submit Button */}
-                    <button
-                      type="submit"
-                      className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:via-indigo-500 hover:to-cyan-400 text-white font-extrabold text-sm shadow-xl shadow-blue-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <Send className="w-4 h-4" />
-                      <span>Send ${calculatedIntlUsd.toFixed(2)} USD via {selectedIntlProvider.name}</span>
-                      <ArrowRight className="w-4 h-4 ml-1" />
-                    </button>
+                    {MAINTENANCE_CONFIG.isActive ? (
+                      <button
+                        type="button"
+                        disabled
+                        className="w-full py-3.5 px-4 rounded-2xl bg-amber-100 border border-amber-300 text-amber-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-not-allowed shadow-none"
+                      >
+                        <AlertCircle className="w-4 h-4 text-amber-700 shrink-0" />
+                        <span>all the payment unavaliable till date 7 Nov , sunday the app is in maintaing mode</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="submit"
+                        className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-500 hover:from-blue-500 hover:via-indigo-500 hover:to-cyan-400 text-white font-extrabold text-sm shadow-xl shadow-blue-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <Send className="w-4 h-4" />
+                        <span>Send ${calculatedIntlUsd.toFixed(2)} USD via {selectedIntlProvider.name}</span>
+                        <ArrowRight className="w-4 h-4 ml-1" />
+                      </button>
+                    )}
 
                     <p className="text-center text-[10px] text-zinc-500">
                       Protected by 5-digit Transaction PIN authorization and 5-second instant security clearance.

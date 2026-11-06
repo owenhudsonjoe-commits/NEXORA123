@@ -29,7 +29,9 @@ import { ExchangeModal } from './components/modals/ExchangeModal';
 import { AddFundsModal } from './components/modals/AddFundsModal';
 import { KYCModal } from './components/modals/KYCModal';
 import { TransactionDetailModal } from './components/modals/TransactionDetailModal';
+import { LinkMeezanModal } from './components/modals/LinkMeezanModal';
 import { Transaction } from './types';
+import { MAINTENANCE_CONFIG } from './data/maintenance';
 
 const MainAppContent: React.FC = () => {
   const { isAuthenticated, appSettings } = useBanking();
@@ -43,6 +45,7 @@ const MainAppContent: React.FC = () => {
   const [isExchangeOpen, setIsExchangeOpen] = useState(false);
   const [isAddFundsOpen, setIsAddFundsOpen] = useState(false);
   const [isKYCOpen, setIsKYCOpen] = useState(false);
+  const [isLinkMeezanOpen, setIsLinkMeezanOpen] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
   // Modal context props
@@ -106,6 +109,17 @@ const MainAppContent: React.FC = () => {
       {/* Top Disclaimer Banner */}
       <DemoHeaderBanner />
 
+      {/* Top System Maintenance Announcement */}
+      {MAINTENANCE_CONFIG.isActive && (
+        <div className="bg-amber-400 text-zinc-950 px-4 py-2.5 text-xs font-bold border-b border-amber-500 flex items-center justify-center gap-2 text-center shadow-xs">
+          <span className="text-sm">⚠️</span>
+          <span>all the payment unavaliable till date 7 Nov , sunday the app is in maintaing mode</span>
+          <span className="hidden md:inline px-2 py-0.5 rounded-full bg-amber-500/50 text-[10px] uppercase tracking-wider font-extrabold">
+            Infrastructure Maintenance
+          </span>
+        </div>
+      )}
+
       {/* Main App Container with Sidebar & Header */}
       <div className="flex-1 flex min-h-0">
         {/* Desktop Sidebar */}
@@ -132,6 +146,7 @@ const MainAppContent: React.FC = () => {
             onOpenExchange={() => setIsExchangeOpen(true)}
             onOpenAddFunds={() => setIsAddFundsOpen(true)}
             onOpenKYC={() => setIsKYCOpen(true)}
+            onOpenLinkMeezan={() => setIsLinkMeezanOpen(true)}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
           />
@@ -155,6 +170,7 @@ const MainAppContent: React.FC = () => {
                     }}
                     onOpenExchange={() => setIsExchangeOpen(true)}
                     onOpenAddFunds={() => setIsAddFundsOpen(true)}
+                    onOpenLinkMeezan={() => setIsLinkMeezanOpen(true)}
                     onSelectTransaction={(tx) => setSelectedTransaction(tx)}
                   />
                 )}
@@ -254,6 +270,11 @@ const MainAppContent: React.FC = () => {
       />
 
       <KYCModal isOpen={isKYCOpen} onClose={() => setIsKYCOpen(false)} />
+
+      <LinkMeezanModal
+        isOpen={isLinkMeezanOpen}
+        onClose={() => setIsLinkMeezanOpen(false)}
+      />
 
       <TransactionDetailModal
         transaction={selectedTransaction}

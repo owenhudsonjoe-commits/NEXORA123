@@ -46,6 +46,7 @@ import {
   RestrictedCountry,
 } from '../../data/restrictedCountries';
 import { ApplyCardModal } from './ApplyCardModal';
+import { MAINTENANCE_CONFIG } from '../../data/maintenance';
 
 interface SendMoneyModalProps {
   isOpen: boolean;
@@ -603,6 +604,30 @@ export const INTERNATIONAL_PAYMENT_PROVIDERS: PaymentProvider[] = [
 
   // INTERNATIONAL RAILS
   {
+    id: 'kaast',
+    name: 'Kaast (Instant P2P / Global Raast)',
+    shortName: 'Kaast',
+    category: 'wallet',
+    badge: 'Kaast P2P',
+    logoText: 'KAAST',
+    flag: '⚡',
+    description: 'Instant zero-fee cross-border P2P transfer via Kaast network and Raast rails',
+    accountLabel: 'Kaast ID / Raast Alias / Registered Mobile Number',
+    placeholder: 'kaast@990182 or 0300 1234567 or PK36 RAST 0000 1234 5678',
+  },
+  {
+    id: 'binance_wallet',
+    name: 'Binance Wallet (Binance Pay / USDT)',
+    shortName: 'Binance Wallet',
+    category: 'wallet',
+    badge: 'Binance Pay',
+    logoText: 'BNB',
+    flag: '🟡',
+    description: 'Instant crypto wallet transfer via Binance Pay ID, Pay Email, or USDT address',
+    accountLabel: 'Binance Pay ID (8-9 digits) / Binance Email / USDT Address',
+    placeholder: 'Binance Pay ID: 284910284 or crypto@binance.com',
+  },
+  {
     id: 'revolut',
     name: 'Revolut',
     shortName: 'Revolut',
@@ -775,6 +800,11 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
     e.preventDefault();
     setErrorMessage(null);
 
+    if (MAINTENANCE_CONFIG.isActive) {
+      setErrorMessage(MAINTENANCE_CONFIG.message);
+      return;
+    }
+
     if (!recipientName.trim()) {
       setErrorMessage('Please enter the recipient / beneficiary account title.');
       return;
@@ -798,6 +828,11 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
   };
 
   const handleExecuteTransfer = () => {
+    if (MAINTENANCE_CONFIG.isActive) {
+      setPinError(MAINTENANCE_CONFIG.message);
+      return;
+    }
+
     if (!securityPin || securityPin.trim().length < 4) {
       setPinError('Security PIN is required to authorize payment (Default PIN: 78800).');
       return;
@@ -910,6 +945,28 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
             <X className="w-5 h-5" />
           </button>
         </div>
+
+        {/* Maintenance Mode Banner */}
+        {MAINTENANCE_CONFIG.isActive && (
+          <div className="mx-5 sm:mx-6 mt-4 p-4 rounded-2xl bg-amber-50 border-2 border-amber-300 text-amber-950 flex items-start gap-3 shadow-xs">
+            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <div className="font-black text-xs uppercase tracking-wide text-amber-900 flex items-center gap-2">
+                <span>System Maintaining Mode</span>
+                <span className="px-2 py-0.5 rounded-md bg-amber-200 text-amber-900 text-[10px] font-bold">
+                  Till 7 Nov, Sunday
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm font-bold text-amber-950 leading-snug whitespace-pre-line">
+                all the payment unavaliable till date 7 Nov , sunday
+the app is in maintaing mode
+              </p>
+              <p className="text-[11px] text-amber-800">
+                All outbound payouts, wallet transfers, and card payment authorizations are currently held. Normal processing resumes Sunday, 7 Nov.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Modal Body */}
         <div className="p-5 sm:p-6 overflow-y-auto flex-1 space-y-6">
@@ -1308,7 +1365,21 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
               </div>
 
               {/* Continue Button */}
-              {isSelectedCountryRestricted ? (
+              {MAINTENANCE_CONFIG.isActive ? (
+                <div className="space-y-2">
+                  <button
+                    type="button"
+                    disabled
+                    className="w-full py-3.5 px-3 rounded-2xl bg-amber-100 border border-amber-300 text-amber-900 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 cursor-not-allowed shadow-none"
+                  >
+                    <Ban className="w-4 h-4 text-amber-700 shrink-0" />
+                    <span>all the payment unavaliable till date 7 Nov , sunday the app is in maintaing mode</span>
+                  </button>
+                  <p className="text-[11px] text-center text-amber-800 font-medium">
+                    Payments are paused until Sunday, 7 Nov during system maintenance.
+                  </p>
+                </div>
+              ) : isSelectedCountryRestricted ? (
                 <div className="space-y-2">
                   <button
                     type="button"
@@ -1472,12 +1543,17 @@ export const SendMoneyModal: React.FC<SendMoneyModalProps> = ({
                 </button>
                 <button
                   type="button"
+                  disabled={MAINTENANCE_CONFIG.isActive}
                   onClick={handleExecuteTransfer}
                   id="confirm-execute-transfer-btn"
-                  className="flex-1 py-3.5 rounded-xl bg-black hover:bg-zinc-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="flex-1 py-3.5 rounded-xl bg-black hover:bg-zinc-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:bg-amber-100 disabled:text-amber-900 disabled:border disabled:border-amber-300 disabled:cursor-not-allowed"
                 >
                   <Lock className="w-3.5 h-3.5" />
-                  <span>Authorize & Send ${amount.toFixed(2)}</span>
+                  <span>
+                    {MAINTENANCE_CONFIG.isActive
+                      ? 'Unavailable in Maintaining Mode'
+                      : `Authorize & Send $${amount.toFixed(2)}`}
+                  </span>
                 </button>
               </div>
             </div>

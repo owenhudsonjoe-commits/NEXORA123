@@ -20,6 +20,50 @@ export interface InternationalPaymentProvider {
 }
 
 export const ALL_INTERNATIONAL_PROVIDERS: InternationalPaymentProvider[] = [
+  // KAAST (Instant P2P / Global Raast Rails)
+  {
+    id: 'kaast',
+    name: 'Kaast (Instant P2P / Global Raast)',
+    shortName: 'Kaast',
+    code: 'KAAST',
+    type: 'fintech_wallet',
+    category: 'Global Fintech',
+    color: 'from-emerald-600 to-teal-700',
+    accentColor: '#10B981',
+    badge: 'Kaast ID / Raast P2P',
+    supportedCurrencies: ['USD', 'PKR', 'AED', 'SAR', 'EUR', 'GBP'],
+    defaultCurrency: 'USD',
+    accountLabel: 'Kaast ID, Raast Alias, or Mobile Number',
+    accountPlaceholder: 'kaast@990182 or 0300 1234567 or PK36 RAST...',
+    exampleId: 'kaast@ayesha_khan',
+    popular: true,
+    description: 'Instant zero-fee cross-border P2P transfer via Kaast network and Raast rails.',
+    processingNetwork: 'Kaast Global P2P & SBP Raast Clearing',
+    clearingTime: 'Instant (5-sec clearance)',
+  },
+
+  // BINANCE WALLET (Binance Pay / Crypto / USDT)
+  {
+    id: 'binance',
+    name: 'Binance Wallet (Binance Pay / USDT)',
+    shortName: 'Binance Wallet',
+    code: 'BNB',
+    type: 'fintech_wallet',
+    category: 'Global Fintech',
+    color: 'from-amber-500 to-yellow-600',
+    accentColor: '#F0B90B',
+    badge: 'Binance Pay / USDT',
+    supportedCurrencies: ['USD', 'EUR', 'GBP', 'AED', 'CAD', 'JPY'],
+    defaultCurrency: 'USD',
+    accountLabel: 'Binance Pay ID (9-digit) or Binance Email / USDT Address',
+    accountPlaceholder: 'Binance Pay ID: 284910284 or crypto@binance.com',
+    exampleId: '284910284',
+    popular: true,
+    description: 'Direct global payout to Binance Web3 wallet or Binance Pay ID with instant settlement.',
+    processingNetwork: 'Binance Pay & BEP20/TRC20 Lightning Clearing',
+    clearingTime: 'Instant (5-sec clearance)',
+  },
+
   // 1. REVOLUT
   {
     id: 'revolut',

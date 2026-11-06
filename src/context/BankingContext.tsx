@@ -34,6 +34,7 @@ import {
   INITIAL_SECURITY_STATE,
 } from '../data/mockData';
 import { isCountryRestricted, getRestrictedCountry } from '../data/restrictedCountries';
+import { MAINTENANCE_CONFIG } from '../data/maintenance';
 
 interface SendMoneyParams {
   recipientName: string;
@@ -82,6 +83,8 @@ interface BankingContextType {
   activeCurrency: string;
   currentLanguage: string;
   t: (key: string) => string;
+  isMaintenanceMode: boolean;
+  maintenanceMessage: string;
 
   // Actions
   setActiveCurrency: (currencyCode: string) => void;
@@ -132,6 +135,10 @@ interface BankingContextType {
   formatMoney: (amount: number, currencyCode?: string) => string;
   triggerConfetti: () => void;
   applyForAtmMastercard: (input: CardApplicationInput) => CardApplication;
+  linkedMeezanIban: string | null;
+  isMeezanLinked: boolean;
+  linkMeezanBank: (iban: string) => { success: boolean; error?: string };
+  unlinkMeezanBank: () => void;
 }
 
 const BankingContext = createContext<BankingContextType | null>(null);
@@ -140,6 +147,7 @@ const STORAGE_KEYS = {
   AUTH: 'ayesha_portal_auth_v13',
   PROFILE: 'ayesha_portal_profile_v13',
   SETTINGS: 'ayesha_portal_settings_v13',
+  MEEZAN_LINK: 'ayesha_meezan_linked_iban_v1',
   WALLETS: 'ayesha_portal_wallets_v13',
   TRANSACTIONS: 'ayesha_portal_txs_v13',
   RECIPIENTS: 'ayesha_portal_recipients_v13',
@@ -441,6 +449,40 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return saved ? JSON.parse(saved) : null;
   });
 
+  const [linkedMeezanIban, setLinkedMeezanIban] = useState<string | null>(() => {
+    return localStorage.getItem(STORAGE_KEYS.MEEZAN_LINK) || null;
+  });
+
+  const linkMeezanBank = (rawIban: string) => {
+    const cleaned = rawIban.replace(/\s+/g, '').toUpperCase();
+    if (!cleaned) {
+      return { success: false, error: 'Please enter your 24-digit Meezan IBAN.' };
+    }
+    if (cleaned.length < 16) {
+      return { success: false, error: 'Invalid IBAN format. Meezan Bank IBAN must be 24 alphanumeric characters.' };
+    }
+    const formatted = rawIban.trim().toUpperCase();
+    setLinkedMeezanIban(formatted);
+    localStorage.setItem(STORAGE_KEYS.MEEZAN_LINK, formatted);
+    addNotification({
+      title: 'Meezan Bank Account Connected',
+      description: `Meezan Bank IBAN (${formatted}) linked successfully to Nexora. SBP Raast clearing active.`,
+      type: 'security',
+    });
+    triggerConfetti();
+    return { success: true };
+  };
+
+  const unlinkMeezanBank = () => {
+    setLinkedMeezanIban(null);
+    localStorage.removeItem(STORAGE_KEYS.MEEZAN_LINK);
+    addNotification({
+      title: 'Meezan Bank Account Disconnected',
+      description: 'Your linked Meezan Bank account has been unlinked from Nexora.',
+      type: 'security',
+    });
+  };
+
   // Sync to LocalStorage
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.AUTH, JSON.stringify(isAuthenticated));
@@ -644,6 +686,15 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Transaction Handler: Send Money
   const sendMoney = (params: SendMoneyParams) => {
+    // Maintenance Mode Check: All payments unavailable till 7 Nov, Sunday
+    if (MAINTENANCE_CONFIG.isActive) {
+      return {
+        success: false,
+        transaction: null as any,
+        error: MAINTENANCE_CONFIG.message,
+      };
+    }
+
     const {
       recipientName,
       recipientAccount,
@@ -741,6 +792,10 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   // Transaction Handler: Exchange Currencies
   const exchangeCurrencies = (params: ExchangeParams) => {
+    if (MAINTENANCE_CONFIG.isActive) {
+      return { success: false, error: MAINTENANCE_CONFIG.message };
+    }
+
     const { fromCurrency, toCurrency, fromAmount } = params;
     if (fromCurrency === toCurrency) {
       return { success: false, error: 'Source and destination currencies cannot be identical.' };
@@ -1195,6 +1250,8 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         activeCurrency: appSettings.defaultCurrency || 'USD',
         currentLanguage: appSettings.language,
         t,
+        isMaintenanceMode: MAINTENANCE_CONFIG.isActive,
+        maintenanceMessage: MAINTENANCE_CONFIG.message,
         setActiveCurrency,
         login,
         logout,
@@ -1234,6 +1291,10 @@ export const BankingProvider: React.FC<{ children: React.ReactNode }> = ({ child
         formatMoney,
         triggerConfetti,
         applyForAtmMastercard,
+        linkedMeezanIban,
+        isMeezanLinked: Boolean(linkedMeezanIban),
+        linkMeezanBank,
+        unlinkMeezanBank,
       }}
     >
       {children}
